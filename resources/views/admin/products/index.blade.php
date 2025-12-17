@@ -28,6 +28,7 @@
                     <td>10000</td>
                     <td>
                         <a href="{{ url('admin/products/edit/1') }}" class="btn btn-sm btn-warning">Редактировать</a>
+                        <a href="{{ url('admin/products') }}" class="btn btn-sm btn-danger">Удалить</a>
                     </td>
                 </tr>
                

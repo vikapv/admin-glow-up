@@ -29,6 +29,7 @@
                            class="btn btn-sm btn-warning">
                             Редактировать
                         </a>
+                        <a href="{{ url('admin/categories') }}" class="btn btn-sm btn-danger">Удалить</a>
                     </td>
                 </tr>
             </tbody>
