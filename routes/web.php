@@ -35,4 +35,9 @@ Route::prefix('admin')->group(function () {
         return view('admin.brands.edit', ['id' => $id]);
     });
 
+     Route::get('/users', function () { 
+        return view('admin.users.index'); 
+    });
+
+
 });

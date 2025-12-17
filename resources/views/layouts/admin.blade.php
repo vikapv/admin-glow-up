@@ -90,6 +90,13 @@
                         </a>
                     </li>
 
+                    <li class="nav-item">
+                    <a href="{{ url('admin/users') }}" class="nav-link">
+                        <i class="nav-icon bi bi-people"></i>
+                        <p>Пользователи</p>
+                    </a>
+                </li>
+
 
                 </ul>
             </nav>
