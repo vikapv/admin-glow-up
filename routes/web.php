@@ -24,4 +24,15 @@ Route::prefix('admin')->group(function () {
      Route::get('/categories/edit/{id}', function ($id) {
         return view('admin.categories.edit');
     });
+
+     Route::get('/brands', function () {
+        return view('admin.brands.index');
+    });
+    Route::get('/brands/create', function () {
+        return view('admin.brands.create');
+    });
+    Route::get('/brands/edit/{id}', function ($id) {
+        return view('admin.brands.edit', ['id' => $id]);
+    });
+
 });
