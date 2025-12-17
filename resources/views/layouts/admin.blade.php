@@ -61,18 +61,28 @@
             <nav class="mt-2">
                 <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="navigation">
                     <li class="nav-header">МЕНЮ</li>
+                    
                     <li class="nav-item">
                         <a href="{{ url('admin/dashboard') }}" class="nav-link">
                             <i class="nav-icon bi bi-speedometer2"></i>
                             <p>Главная</p>
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a href="{{ url('admin/products') }}" class="nav-link">
                             <i class="nav-icon bi bi-box-seam"></i>
                             <p>Товары</p>
                         </a>
                     </li>
+
+                    <li class="nav-item">
+                        <a href="{{ url('admin/categories') }}" class="nav-link">
+                            <i class="nav-icon bi bi-tags"></i>
+                             <p>Категории</p>
+                        </a>
+                    </li>
+
                 </ul>
             </nav>
         </div>

@@ -18,4 +18,10 @@ Route::prefix('admin')->group(function () {
     Route::get('/products/edit/{id}', function ($id) {
         return view('admin.products.edit', ['id' => $id]);
     });
+
+    Route::get('/categories', fn () => view('admin.categories.index'));
+    Route::get('/categories/create', fn () => view('admin.categories.create'));
+     Route::get('/categories/edit/{id}', function ($id) {
+        return view('admin.categories.edit');
+    });
 });
