@@ -104,6 +104,13 @@
                     </a>
                 </li>
 
+                <li class="nav-item">
+                    <a href="{{ url('admin/reviews') }}" class="nav-link">
+                        <i class="nav-icon bi bi-chat-left-text"></i>
+                        <p>Отзывы</p>
+                    </a>
+                </li>
+
 
                 </ul>
             </nav>

@@ -47,4 +47,14 @@ Route::prefix('admin')->group(function () {
         return view('admin.orders.show', ['id' => $id]);
     })->name('admin.orders.show');
 
+
+    Route::get('/reviews', function () {
+        return view('admin.reviews.index');
+    })->name('admin.reviews');
+
+    Route::get('/reviews/show/{id}', function ($id) {
+        return view('admin.reviews.show', ['id' => $id]);
+    })->name('admin.reviews.show');
+
+    
 });
