@@ -15,6 +15,8 @@
                 <tr>
                     <th>#</th>
                     <th>Название</th>
+                    <th>Категория</th>
+                    <th>Бренд</th>
                     <th>Фото</th>
                     <th>Цена</th>
                     <th>Действия</th>
@@ -24,6 +26,8 @@
                 <tr>
                     <td>1</td>
                     <td>Товар 1</td>
+                    <td>Уход за лицом</td>
+                    <td>Brand A</td>
                     <td>Фото</td>
                     <td>10000</td>
                     <td>
@@ -31,7 +35,18 @@
                         <a href="{{ url('admin/products') }}" class="btn btn-sm btn-danger">Удалить</a>
                     </td>
                 </tr>
-               
+                <tr>
+                    <td>2</td>
+                    <td>Товар 2</td>
+                    <td>Уход за телом</td>
+                    <td>Brand B</td>
+                    <td>Фото</td>
+                    <td>15000</td>
+                    <td>
+                        <a href="{{ url('admin/products/edit/2') }}" class="btn btn-sm btn-warning">Редактировать</a>
+                        <a href="{{ url('admin/products') }}" class="btn btn-sm btn-danger">Удалить</a>
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>
