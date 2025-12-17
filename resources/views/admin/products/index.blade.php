@@ -2,8 +2,9 @@
 
 @section('content')
 <div class="app-content-header">
-    <div class="container-fluid">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
         <h3>Товары</h3>
+        <a href="{{ url('admin/products/create') }}" class="btn btn-primary">Добавить товар</a>
     </div>
 </div>
 
