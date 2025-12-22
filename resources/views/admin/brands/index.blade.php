@@ -12,27 +12,114 @@
 
 <div class="app-content">
     <div class="container-fluid">
-        <table class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Название бренда</th>
-                    <th>Логотип</th>
-                    <th>Действия</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>Бренд 1</td>
-                    <td>Логотип</td>
-                    <td>
-                        <a href="{{ url('admin/brands/edit/1') }}" class="btn btn-sm btn-warning">Редактировать</a>
-                        <a href="#" class="btn btn-sm btn-danger">Удалить</a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="row g-3 justify-content-center">
+
+            {{-- Бренд 1 --}}
+            <div class="col-md-4">
+                <div class="card shadow-sm p-2">
+                    <h6 class="text-center mb-2 fw-bold">Brand A</h6>
+
+                    <div class="text-center mb-2">
+                        <div
+                            style="
+                                width:150px;
+                                height:150px;
+                                background-color:#ddd;
+                                display:flex;
+                                align-items:center;
+                                justify-content:center;
+                                font-weight:bold;
+                                color:#555;
+                                margin:0 auto;
+                                border-radius:5px;
+                            "
+                        >
+                            Логотип
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-1 justify-content-center mt-2">
+                        <a href="{{ url('admin/brands/edit/1') }}" class="btn btn-sm btn-warning">
+                            Редактировать
+                        </a>
+                        <a href="#" class="btn btn-sm btn-danger">
+                            Удалить
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Бренд 2 --}}
+            <div class="col-md-4">
+                <div class="card shadow-sm p-2">
+                    <h6 class="text-center mb-2 fw-bold">Brand B</h6>
+
+                    <div class="text-center mb-2">
+                        <div
+                            style="
+                                width:150px;
+                                height:150px;
+                                background-color:#ddd;
+                                display:flex;
+                                align-items:center;
+                                justify-content:center;
+                                font-weight:bold;
+                                color:#555;
+                                margin:0 auto;
+                                border-radius:5px;
+                            "
+                        >
+                            Логотип
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-1 justify-content-center mt-2">
+                        <a href="{{ url('admin/brands/edit/2') }}" class="btn btn-sm btn-warning">
+                            Редактировать
+                        </a>
+                        <a href="#" class="btn btn-sm btn-danger">
+                            Удалить
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Бренд 3 --}}
+            <div class="col-md-4">
+                <div class="card shadow-sm p-2">
+                    <h6 class="text-center mb-2 fw-bold">Brand C</h6>
+
+                    <div class="text-center mb-2">
+                        <div
+                            style="
+                                width:150px;
+                                height:150px;
+                                background-color:#ddd;
+                                display:flex;
+                                align-items:center;
+                                justify-content:center;
+                                font-weight:bold;
+                                color:#555;
+                                margin:0 auto;
+                                border-radius:5px;
+                            "
+                        >
+                            Логотип
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-1 justify-content-center mt-2">
+                        <a href="{{ url('admin/brands/edit/3') }}" class="btn btn-sm btn-warning">
+                            Редактировать
+                        </a>
+                        <a href="#" class="btn btn-sm btn-danger">
+                            Удалить
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
 </div>
 @endsection
