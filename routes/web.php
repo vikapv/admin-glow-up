@@ -1,7 +1,18 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\AuthController;
 
+// Страница логина (первая страница)
+Route::get('/', [AuthController::class, 'showLoginForm'])->name('admin.login');
+
+// Обработка логина
+Route::post('/login', [AuthController::class, 'login'])->name('admin.login.submit');
+
+// Выйти из админки
+Route::get('/logout', [AuthController::class, 'logout'])->name('admin.logout');
+
+// Маршруты админки
 Route::prefix('admin')->group(function () {
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
@@ -21,11 +32,11 @@ Route::prefix('admin')->group(function () {
 
     Route::get('/categories', fn () => view('admin.categories.index'));
     Route::get('/categories/create', fn () => view('admin.categories.create'));
-     Route::get('/categories/edit/{id}', function ($id) {
+    Route::get('/categories/edit/{id}', function ($id) {
         return view('admin.categories.edit');
     });
 
-     Route::get('/brands', function () {
+    Route::get('/brands', function () {
         return view('admin.brands.index');
     });
     Route::get('/brands/create', function () {
@@ -35,7 +46,7 @@ Route::prefix('admin')->group(function () {
         return view('admin.brands.edit', ['id' => $id]);
     });
 
-     Route::get('/users', function () { 
+    Route::get('/users', function () { 
         return view('admin.users.index'); 
     });
 
@@ -47,7 +58,6 @@ Route::prefix('admin')->group(function () {
         return view('admin.orders.show', ['id' => $id]);
     })->name('admin.orders.show');
 
-
     Route::get('/reviews', function () {
         return view('admin.reviews.index');
     })->name('admin.reviews');
@@ -55,7 +65,6 @@ Route::prefix('admin')->group(function () {
     Route::get('/reviews/show/{id}', function ($id) {
         return view('admin.reviews.show', ['id' => $id]);
     })->name('admin.reviews.show');
-
 
     Route::get('/promotions', function () {
         return view('admin.promotions.index');
@@ -68,5 +77,4 @@ Route::prefix('admin')->group(function () {
     Route::get('/promotions/edit/{id}', function ($id) {
         return view('admin.promotions.edit', ['id' => $id]);
     })->name('admin.promotions.edit');
-
 });

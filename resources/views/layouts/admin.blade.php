@@ -40,7 +40,9 @@
                         </li>
                         <li class="user-footer">
                             <a href="#" class="btn btn-default btn-flat">Профиль</a>
-                            <a href="#" class="btn btn-default btn-flat float-end">Выйти</a>
+                            <a href="{{ route('admin.logout') }}" class="btn btn-danger">
+                                <i class="bi bi-box-arrow-right"></i> Выйти
+                            </a>
                         </li>
                     </ul>
                 </li>
@@ -115,8 +117,7 @@
                     <a href="{{ url('admin/promotions') }}" class="nav-link">
                         <i class="nav-icon bi bi-gift"></i>
                         <p>Акции и скидки</p>
-                    </a>
-                </li>
+                    </a></li>
 
 
                 </ul>
