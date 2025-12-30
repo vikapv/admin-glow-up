@@ -4,7 +4,7 @@
 <div class="app-content-header">
     <div class="container-fluid d-flex justify-content-between align-items-center">
         <h3>Категории</h3>
-        <a href="{{ url('admin/categories/create') }}" class="btn btn-primary">
+        <a href="{{ route('admin.categories.create') }}" class="btn btn-primary">
             Добавить категорию
         </a>
     </div>
@@ -21,17 +21,22 @@
                 </tr>
             </thead>
             <tbody>
+                @foreach($categories as $category)
                 <tr>
-                    <td>1</td>
-                    <td>Уход за лицом</td>
+                    <td>{{ $category->id }}</td>
+                    <td>{{ $category->name }}</td>
                     <td>
-                        <a href="{{ url('admin/categories/edit/1') }}"
+                        <a href="{{ route('admin.categories.edit', $category) }}"
                            class="btn btn-sm btn-warning">
                             Редактировать
                         </a>
-                        <a href="{{ url('admin/categories') }}" class="btn btn-sm btn-danger">Удалить</a>
+                        <form action="{{ route('admin.categories.delete', $category) }}" method="POST" style="display:inline">
+                            @csrf
+                            <button class="btn btn-sm btn-danger">Удалить</button>
+                        </form>
                     </td>
                 </tr>
+                @endforeach
             </tbody>
         </table>
     </div>

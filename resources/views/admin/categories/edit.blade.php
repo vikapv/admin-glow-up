@@ -11,29 +11,19 @@
     <div class="container-fluid">
         <div class="card">
             <div class="card-body">
+                <form action="{{ route('admin.categories.update', $category) }}" method="POST">
+                    @csrf
+                    <div class="mb-3">
+                        <label class="form-label">Название категории</label>
+                        <input type="text"
+                               class="form-control"
+                               name="name"
+                               value="{{ $category->name }}">
+                    </div>
 
-                <div class="mb-3">
-                    <label class="form-label">Название категории</label>
-                    <input
-                        type="text"
-                        class="form-control"
-                        value="Уход за лицом"
-                    >
-                </div>
-
-                <div class="d-flex gap-2">
-                    <a href="{{ url('admin/categories') }}"
-                       class="btn btn-secondary">
-                        Назад
-                    </a>
-
-                    <!-- ВАЖНО: это ССЫЛКА -->
-                    <a href="{{ url('admin/categories') }}"
-                       class="btn btn-primary">
-                        Сохранить
-                    </a>
-                </div>
-
+                    <a href="{{ route('admin.categories.index') }}" class="btn btn-secondary">Назад</a>
+                    <button class="btn btn-primary">Сохранить</button>
+                </form>
             </div>
         </div>
     </div>

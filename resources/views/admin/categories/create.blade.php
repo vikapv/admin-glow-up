@@ -11,22 +11,19 @@
     <div class="container-fluid">
         <div class="card">
             <div class="card-body">
+                <form action="{{ route('admin.categories.store') }}" method="POST">
+                    @csrf
+                    <div class="mb-3">
+                        <label class="form-label">Название категории</label>
+                        <input type="text"
+                               class="form-control"
+                               name="name"
+                               placeholder="Введите название категории">
+                    </div>
 
-                <div class="mb-3">
-                    <label class="form-label">Название категории</label>
-                    <input type="text"
-                           class="form-control"
-                           placeholder="Введите название категории">
-                </div>
-
-                <a href="{{ url('admin/categories') }}" class="btn btn-secondary">
-                    Назад
-                </a>
-
-                <a href="{{ url('admin/categories') }}" class="btn btn-primary">
-                    Сохранить
-                </a>
-
+                    <a href="{{ route('admin.categories.index') }}" class="btn btn-secondary">Назад</a>
+                    <button class="btn btn-primary">Сохранить</button>
+                </form>
             </div>
         </div>
     </div>

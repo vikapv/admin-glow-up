@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,14 +45,18 @@ Route::prefix('admin')->group(function () {
     Route::post('/products/update/{product}', [ProductController::class, 'update'])->name('admin.products.update');
     Route::post('/products/delete/{product}', [ProductController::class, 'destroy'])->name('admin.products.delete');
 
+    
     /*
     |--------------------------------------------------------------------------
     | CATEGORIES
     |--------------------------------------------------------------------------
     */
-    Route::get('/categories', fn () => view('admin.categories.index'));
-    Route::get('/categories/create', fn () => view('admin.categories.create'));
-    Route::get('/categories/edit/{id}', fn ($id) => view('admin.categories.edit'));
+    Route::get('/categories', [CategoryController::class, 'index'])->name('admin.categories.index');
+    Route::get('/categories/create', [CategoryController::class, 'create'])->name('admin.categories.create');
+    Route::post('/categories', [CategoryController::class, 'store'])->name('admin.categories.store');
+    Route::get('/categories/edit/{category}', [CategoryController::class, 'edit'])->name('admin.categories.edit');
+    Route::post('/categories/update/{category}', [CategoryController::class, 'update'])->name('admin.categories.update');
+    Route::post('/categories/delete/{category}', [CategoryController::class, 'destroy'])->name('admin.categories.delete');
 
 
     /*
