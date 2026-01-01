@@ -1,6 +1,7 @@
 @extends('layouts.admin')
 
 @section('content')
+
 <div class="app-content-header">
     <div class="container-fluid d-flex justify-content-between align-items-center">
         <h3>Пользователи</h3>
@@ -9,85 +10,76 @@
 
 <div class="app-content">
     <div class="container-fluid">
-        <table class="table table-bordered table-striped" id="users-table">
+
+        @if(session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        <table class="table table-bordered table-striped align-middle">
             <thead>
                 <tr>
-                    <th>#</th>
+                    <th style="width: 60px">#</th>
                     <th>Имя</th>
                     <th>Email</th>
-                    <th>Статус</th>
-                    <th>Действия</th>
+                    <th style="width: 120px">Статус</th>
+                    <th style="width: 220px">Действия</th>
                 </tr>
             </thead>
+
             <tbody>
-                <tr class="user-row active">
-                    <td>1</td>
-                    <td>Иван Иванов</td>
-                    <td>ivan@mail.com</td>
-                    <td class="status">Активен</td>
-                    <td>
-                        <button class="btn btn-sm btn-danger ban-btn">Забанить</button>
-                        <button class="btn btn-sm btn-success unban-btn">Разбанить</button>
-                    </td>
-                </tr>
+                @forelse($users as $user)
+                    <tr class="{{ $user->status === 'banned' ? 'table-danger' : '' }}">
+                        <td>{{ $user->id }}</td>
+                        <td>{{ $user->name }}</td>
+                        <td>{{ $user->email }}</td>
+
+                        <td>
+                            @if($user->status === 'active')
+                                <span class="badge bg-success">Активен</span>
+                            @else
+                                <span class="badge bg-danger">Забанен</span>
+                            @endif
+                        </td>
+
+                        <td class="d-flex gap-2">
+
+                            {{-- Забанить --}}
+                            @if($user->status === 'active')
+                                <form action="{{ route('admin.users.status', $user) }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="status" value="banned">
+                                    <button class="btn btn-sm btn-danger">
+                                        Забанить
+                                    </button>
+                                </form>
+                            @endif
+
+                            {{-- Разбанить --}}
+                            @if($user->status === 'banned')
+                                <form action="{{ route('admin.users.status', $user) }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="status" value="active">
+                                    <button class="btn btn-sm btn-success">
+                                        Разбанить
+                                    </button>
+                                </form>
+                            @endif
+
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="5" class="text-center text-muted">
+                            Пользователи не найдены
+                        </td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
+
     </div>
 </div>
 
-<style>
-/* Основные цвета строк */
-.user-row.active { background-color: #d4edda; transition: all 0.3s; }
-.user-row.banned { background-color: #f8d7da; transition: all 0.3s; }
-
-/* Горящий эффект по бокам */
-.user-row.banned::before, .user-row.banned::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    width: 5px;
-    height: 100%;
-    background: red;
-}
-.user-row.banned::before { left: 0; }
-.user-row.banned::after { right: 0; }
-
-.user-row.active::before, .user-row.active::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    width: 5px;
-    height: 100%;
-    background: green;
-}
-.user-row.active::before { left: 0; }
-.user-row.active::after { right: 0; }
-
-table { position: relative; }
-</style>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const banButtons = document.querySelectorAll('.ban-btn');
-    const unbanButtons = document.querySelectorAll('.unban-btn');
-
-    banButtons.forEach(btn => {
-        btn.addEventListener('click', function() {
-            const row = this.closest('tr');
-            row.classList.add('banned');
-            row.classList.remove('active');
-            row.querySelector('.status').innerText = 'Забанен';
-        });
-    });
-
-    unbanButtons.forEach(btn => {
-        btn.addEventListener('click', function() {
-            const row = this.closest('tr');
-            row.classList.add('active');
-            row.classList.remove('banned');
-            row.querySelector('.status').innerText = 'Активен';
-        });
-    });
-});
-</script>
 @endsection

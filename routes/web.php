@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\BrandController;
+use App\Http\Controllers\Admin\AdminUserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -89,9 +90,14 @@ Route::prefix('admin')->group(function () {
     | USERS
     |--------------------------------------------------------------------------
     */
-    Route::get('/users', fn () => view('admin.users.index'));
+    
+   Route::get('/users', [AdminUserController::class, 'index'])
+        ->name('admin.users.index');
 
+    Route::post('/users/{adminUser}/status', [AdminUserController::class, 'updateStatus'])
+        ->name('admin.users.status');
 
+        
     /*
     |--------------------------------------------------------------------------
     | ORDERS
