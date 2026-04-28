@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\PromotionController;
+use App\Http\Controllers\Admin\PartnerRequestController;
 
 
 
@@ -132,5 +133,13 @@ Route::prefix('admin')->group(function () {
     Route::get('/promotions/edit/{promotion}', [PromotionController::class, 'edit'])->name('admin.promotions.edit');
     Route::put('/promotions/update/{promotion}', [PromotionController::class, 'update'])->name('admin.promotions.update');
     Route::post('/promotions/delete/{promotion}', [PromotionController::class, 'destroy'])->name('admin.promotions.delete');
+
+    Route::get('/partners', [PartnerRequestController::class, 'index'])->name('admin.partners.index');
+Route::get('/partners/{partner}', [PartnerRequestController::class, 'show'])->name('admin.partners.show');
+
+Route::post('/partners/{partner}/approve', [PartnerRequestController::class, 'approve'])->name('admin.partners.approve');
+Route::post('/partners/{partner}/reject', [PartnerRequestController::class, 'reject'])->name('admin.partners.reject');
+
+Route::post('/partners/{partner}/delete', [PartnerRequestController::class, 'destroy'])->name('admin.partners.delete');
 
 });
