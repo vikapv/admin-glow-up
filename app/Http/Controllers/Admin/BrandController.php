@@ -7,14 +7,16 @@ use App\Models\Brand;
 
 class BrandController extends Controller
 {
+    // список брендов (только approved если нужно)
     public function index()
-{
-    $brands = Brand::with('partner')
-        ->get()
-        ->filter(function ($brand) {
-            return $brand->partner && $brand->partner->status === 'approved';
-        });
+    {
+        $brands = Brand::all();
+        return view('admin.brands.index', compact('brands'));
+    }
 
-    return view('admin.brands.index', compact('brands'));
-}
+    // 👇 ВОТ ЭТОГО У ТЕБЯ НЕ ХВАТАЛО
+    public function show(Brand $brand)
+    {
+        return view('admin.brands.show', compact('brand'));
+    }
 }

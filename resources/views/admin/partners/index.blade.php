@@ -1,50 +1,95 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="container-fluid">
-    <h3>Партнёры</h3>
+<div class="app-content-header">
+    <div class="container-fluid">
+        <h3 class="fw-bold">Партнёры</h3>
+        <p class="text-muted">Заявки на подключение партнёров</p>
+    </div>
+</div>
 
-    {{-- УВЕДОМЛЕНИЯ --}}
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
+<div class="app-content">
+    <div class="container-fluid">
 
-    @if(session('error'))
-        <div class="alert alert-danger">{{ session('error') }}</div>
-    @endif
+        {{-- уведомления --}}
+        @if(session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
 
-    <div class="row">
-        @foreach($requests as $partner)
-        <div class="col-md-4">
-            <div class="card p-3 text-center">
+        @if(session('error'))
+            <div class="alert alert-danger">{{ session('error') }}</div>
+        @endif
 
-                <h5>{{ $partner->name }}</h5>
+        <div class="row g-4">
 
-                @if($partner->logo)
-                    <img src="{{ asset($partner->logo) }}" style="height:150px;object-fit:cover">
-                @endif
+            @forelse($requests as $partner)
+                <div class="col-md-4">
 
-                {{-- СТАТУС --}}
-                <p class="mt-2">
-                    @if($partner->status == 'pending')
-                        <span class="badge bg-warning text-dark">На рассмотрении</span>
-                    @elseif($partner->status == 'approved')
-                        <span class="badge bg-success">Принят</span>
-                    @else
-                        <span class="badge bg-danger">Отклонён</span>
-                    @endif
-                </p>
+                    <div class="card border-0 shadow-sm h-100">
 
-                <a href="{{ route('admin.partners.show', $partner) }}" class="btn btn-primary btn-sm">Просмотр</a>
+                        <div class="card-body text-center">
 
-                <form action="{{ route('admin.partners.delete', $partner) }}" method="POST">
-                    @csrf
-                    <button class="btn btn-danger btn-sm mt-1">Удалить</button>
-                </form>
+                            {{-- LOGO --}}
+                            <div class="mb-3">
+                                @if($partner->logo)
+                                    <img src="{{ asset($partner->logo) }}"
+                                         style="width:120px;height:120px;object-fit:cover;border-radius:12px;">
+                                @else
+                                    <div style="width:120px;height:120px;
+                                                background:#f1f1f1;
+                                                display:flex;
+                                                align-items:center;
+                                                justify-content:center;
+                                                border-radius:12px;
+                                                margin:0 auto;">
+                                        Нет фото
+                                    </div>
+                                @endif
+                            </div>
 
-            </div>
+                            {{-- NAME --}}
+                            <h5 class="fw-bold mb-2">{{ $partner->name }}</h5>
+
+                            {{-- STATUS --}}
+                            @if($partner->status == 'pending')
+                                <span class="badge bg-warning text-dark mb-3">На рассмотрении</span>
+                            @elseif($partner->status == 'approved')
+                                <span class="badge bg-success mb-3">Принят</span>
+                            @else
+                                <span class="badge bg-danger mb-3">Отклонён</span>
+                            @endif
+
+                            {{-- BUTTON --}}
+                            <div class="d-grid gap-2">
+
+                                <a href="{{ route('admin.partners.show', $partner) }}"
+                                   class="btn btn-primary btn-sm">
+                                    Просмотр
+                                </a>
+
+                                <form action="{{ route('admin.partners.delete', $partner) }}"
+                                      method="POST">
+                                    @csrf
+                                    <button class="btn btn-outline-danger btn-sm w-100">
+                                        Удалить
+                                    </button>
+                                </form>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            @empty
+                <div class="col-12 text-center text-muted py-5">
+                    <h5>Заявок пока нет</h5>
+                </div>
+            @endforelse
+
         </div>
-        @endforeach
+
     </div>
 </div>
 @endsection
