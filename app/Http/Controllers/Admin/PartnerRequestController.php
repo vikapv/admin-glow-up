@@ -20,18 +20,19 @@ class PartnerRequestController extends Controller
     }
 
     public function approve(PartnerRequest $partner)
-    {
-        $partner->update(['status' => 'approved']);
+{
+    $partner->update(['status' => 'approved']);
 
-        // создаём бренд только если его ещё нет
-        Brand::firstOrCreate([
-            'name' => $partner->name
-        ], [
+    Brand::updateOrCreate(
+        ['partner_request_id' => $partner->id],
+        [
+            'name' => $partner->name,
             'logo' => $partner->logo
-        ]);
+        ]
+    );
 
-        return redirect()->route('admin.partners.index');
-    }
+    return redirect()->route('admin.partners.index');
+}
 
     public function reject(PartnerRequest $partner)
     {
@@ -41,9 +42,13 @@ class PartnerRequestController extends Controller
     }
 
     public function destroy(PartnerRequest $partner)
-    {
-        $partner->delete();
+{
+    // сначала удаляем бренд
+    Brand::where('partner_request_id', $partner->id)->delete();
 
-        return redirect()->route('admin.partners.index');
-    }
+    // потом партнёра
+    $partner->delete();
+
+    return redirect()->route('admin.partners.index');
+}
 }

@@ -10,19 +10,20 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {
-        Schema::create('brands', function (Blueprint $table) {
-    $table->id();
-    $table->string('name')->unique();
-    $table->string('logo')->nullable();
+{
+    Schema::create('brands', function (Blueprint $table) {
+        $table->id();
+        $table->string('name')->unique();
+        $table->string('logo')->nullable();
 
-    $table->foreignId('partner_request_id')
-        ->constrained()
-        ->cascadeOnDelete();
+        $table->foreignId('partner_request_id')
+            ->nullable()
+            ->constrained('partner_requests')
+            ->cascadeOnDelete();
 
-    $table->timestamps();
-});
-    }
+        $table->timestamps();
+    });
+}
 
     /**
      * Reverse the migrations.

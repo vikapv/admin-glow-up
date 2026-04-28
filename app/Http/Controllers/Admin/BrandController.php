@@ -8,13 +8,13 @@ use App\Models\Brand;
 class BrandController extends Controller
 {
     public function index()
-    {
-        $brands = Brand::all();
-        return view('admin.brands.index', compact('brands'));
-    }
+{
+    $brands = Brand::with('partner')
+        ->get()
+        ->filter(function ($brand) {
+            return $brand->partner && $brand->partner->status === 'approved';
+        });
 
-    public function show(Brand $brand)
-    {
-        return view('admin.brands.show', compact('brand'));
-    }
+    return view('admin.brands.index', compact('brands'));
+}
 }
