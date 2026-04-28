@@ -68,23 +68,9 @@ Route::prefix('admin')->group(function () {
     | BRANDS
     |--------------------------------------------------------------------------
     */
-    // Список брендов
+
     Route::get('/brands', [BrandController::class, 'index'])->name('admin.brands.index');
-
-    // Форма создания
-    Route::get('/brands/create', [BrandController::class, 'create'])->name('admin.brands.create');
-
-    // Сохранение нового бренда
-    Route::post('/brands', [BrandController::class, 'store'])->name('admin.brands.store');
-
-    // Форма редактирования
-    Route::get('/brands/edit/{brand}', [BrandController::class, 'edit'])->name('admin.brands.edit');
-
-    // Обновление бренда
-    Route::put('/brands/update/{brand}', [BrandController::class, 'update'])->name('admin.brands.update');
-
-    // Удаление бренда
-    Route::post('/brands/delete/{brand}', [BrandController::class, 'destroy'])->name('admin.brands.delete');
+    Route::get('/brands/{brand}', [BrandController::class, 'show'])->name('admin.brands.show');
 
 
     /*
@@ -135,11 +121,10 @@ Route::prefix('admin')->group(function () {
     Route::post('/promotions/delete/{promotion}', [PromotionController::class, 'destroy'])->name('admin.promotions.delete');
 
     Route::get('/partners', [PartnerRequestController::class, 'index'])->name('admin.partners.index');
-Route::get('/partners/{partner}', [PartnerRequestController::class, 'show'])->name('admin.partners.show');
+    Route::get('/partners/{partner}', [PartnerRequestController::class, 'show'])->name('admin.partners.show');
 
-Route::post('/partners/{partner}/approve', [PartnerRequestController::class, 'approve'])->name('admin.partners.approve');
-Route::post('/partners/{partner}/reject', [PartnerRequestController::class, 'reject'])->name('admin.partners.reject');
-
-Route::post('/partners/{partner}/delete', [PartnerRequestController::class, 'destroy'])->name('admin.partners.delete');
+    Route::post('/partners/{partner}/approve', [PartnerRequestController::class, 'approve'])->name('admin.partners.approve');
+    Route::post('/partners/{partner}/reject', [PartnerRequestController::class, 'reject'])->name('admin.partners.reject');
+    Route::post('/partners/{partner}/delete', [PartnerRequestController::class, 'destroy'])->name('admin.partners.delete');
 
 });

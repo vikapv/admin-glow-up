@@ -14,3 +14,4 @@ class PartnerRequest extends Model
         'status'
     ];
 }
+
