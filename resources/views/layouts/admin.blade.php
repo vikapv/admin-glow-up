@@ -119,6 +119,13 @@
                         <p>Акции и скидки</p>
                     </a></li>
 
+                <li class="nav-item">
+                     <a href="{{ url('admin/partners') }}" class="nav-link">
+                        <i class="nav-icon bi bi-person-plus"></i>
+                         <p>Партнёры</p>
+                     </a>
+                </li>
+
 
                 </ul>
             </nav>

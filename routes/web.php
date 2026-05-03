@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\PromotionController;
+use App\Http\Controllers\Admin\PartnerRequestController;
 
 
 
@@ -42,11 +43,7 @@ Route::prefix('admin')->group(function () {
     |--------------------------------------------------------------------------
     */
      Route::get('/products', [ProductController::class, 'index'])->name('admin.products.index');
-    Route::get('/products/create', [ProductController::class, 'create'])->name('admin.products.create');
-    Route::post('/products', [ProductController::class, 'store'])->name('admin.products.store');
-    Route::get('/products/edit/{product}', [ProductController::class, 'edit'])->name('admin.products.edit');
-    Route::post('/products/update/{product}', [ProductController::class, 'update'])->name('admin.products.update');
-    Route::post('/products/delete/{product}', [ProductController::class, 'destroy'])->name('admin.products.delete');
+   
 
     
     /*
@@ -67,23 +64,9 @@ Route::prefix('admin')->group(function () {
     | BRANDS
     |--------------------------------------------------------------------------
     */
-    // Список брендов
+
     Route::get('/brands', [BrandController::class, 'index'])->name('admin.brands.index');
-
-    // Форма создания
-    Route::get('/brands/create', [BrandController::class, 'create'])->name('admin.brands.create');
-
-    // Сохранение нового бренда
-    Route::post('/brands', [BrandController::class, 'store'])->name('admin.brands.store');
-
-    // Форма редактирования
-    Route::get('/brands/edit/{brand}', [BrandController::class, 'edit'])->name('admin.brands.edit');
-
-    // Обновление бренда
-    Route::put('/brands/update/{brand}', [BrandController::class, 'update'])->name('admin.brands.update');
-
-    // Удаление бренда
-    Route::post('/brands/delete/{brand}', [BrandController::class, 'destroy'])->name('admin.brands.delete');
+    Route::get('/brands/{brand}', [BrandController::class, 'show'])->name('admin.brands.show');
 
 
     /*
@@ -132,5 +115,12 @@ Route::prefix('admin')->group(function () {
     Route::get('/promotions/edit/{promotion}', [PromotionController::class, 'edit'])->name('admin.promotions.edit');
     Route::put('/promotions/update/{promotion}', [PromotionController::class, 'update'])->name('admin.promotions.update');
     Route::post('/promotions/delete/{promotion}', [PromotionController::class, 'destroy'])->name('admin.promotions.delete');
+
+    Route::get('/partners', [PartnerRequestController::class, 'index'])->name('admin.partners.index');
+    Route::get('/partners/{partner}', [PartnerRequestController::class, 'show'])->name('admin.partners.show');
+
+    Route::post('/partners/{partner}/approve', [PartnerRequestController::class, 'approve'])->name('admin.partners.approve');
+    Route::post('/partners/{partner}/reject', [PartnerRequestController::class, 'reject'])->name('admin.partners.reject');
+    Route::post('/partners/{partner}/delete', [PartnerRequestController::class, 'destroy'])->name('admin.partners.delete');
 
 });

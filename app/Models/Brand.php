@@ -2,12 +2,18 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Brand extends Model
 {
-    use HasFactory;
+    protected $fillable = [
+        'name',
+        'logo',
+        'partner_request_id'
+    ];
 
-    protected $fillable = ['name', 'logo'];
+    public function partner()
+{
+    return $this->belongsTo(PartnerRequest::class, 'partner_request_id');
+}
 }

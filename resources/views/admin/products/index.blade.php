@@ -2,60 +2,64 @@
 
 @section('content')
 <div class="app-content-header">
-    <div class="container-fluid d-flex justify-content-between align-items-center">
+    <div class="container-fluid">
         <h3>Товары</h3>
-        <a href="{{ route('admin.products.create') }}" class="btn btn-primary">Добавить товар</a>
     </div>
 </div>
 
 <div class="app-content">
     <div class="container-fluid">
-        <div class="row g-3 justify-content-center">
 
-            @foreach($products as $product)
-            <div class="col-md-4">
-                <div class="card shadow-sm p-2">
-                    <h6 class="text-center mb-2 fw-bold">{{ $product->title }}</h6>
+        {{-- ФИЛЬТР --}}
+        <form method="GET" class="mb-4">
+            <select name="brand" class="form-control" onchange="this.form.submit()">
+                <option value="">Все бренды</option>
 
-                    <div class="text-center mb-2">
+                @foreach($brands as $brand)
+                    <option value="{{ $brand->name }}"
+                        {{ request('brand') == $brand->name ? 'selected' : '' }}>
+                        {{ $brand->name }}
+                    </option>
+                @endforeach
+            </select>
+        </form>
+
+        {{-- ТОВАРЫ --}}
+        <div class="row g-3">
+
+            @forelse($products as $product)
+                <div class="col-md-4">
+                    <div class="card shadow-sm p-3 text-center">
+
+                        <h5 class="fw-bold">{{ $product->title }}</h5>
+
                         @if($product->image)
-                            <img src="{{ asset('storage/' . $product->image) }}" 
-                                 style="width:150px;height:150px;object-fit:cover;border-radius:5px">
+                            <img src="{{ asset('storage/' . $product->image) }}"
+                                 style="width:150px;height:150px;object-fit:cover;border-radius:8px;">
                         @else
-                            <div style="width:150px;height:150px;background:#ddd;display:flex;align-items:center;justify-content:center;font-weight:bold;color:#555;border-radius:5px;">
-                                Фото
+                            <div style="width:150px;height:150px;background:#eee;
+                                        display:flex;align-items:center;justify-content:center;">
+                                Нет фото
                             </div>
                         @endif
-                    </div>
 
-                    <p class="mb-1 small"><strong>Категория:</strong> {{ $product->category }}</p>
-                    <p class="mb-1 small"><strong>Бренд:</strong> {{ $product->brand }}</p>
-                    <p class="mb-1 small"><strong>Цена:</strong> {{ $product->price }} тг</p>
+                        <p class="mt-2"><b>Бренд:</b> {{ $product->brand }}</p>
+                        <p><b>Категория:</b> {{ $product->category }}</p>
+                        <p><b>Цена:</b> {{ $product->price }} тг</p>
 
-                    <p class="mb-1 small"><strong>Акция / Скидка:</strong>
-                        @if($product->discount)
-                            @php
-                                $promo = \App\Models\Promotion::where('discount', $product->discount)->first();
-                            @endphp
-                            {{ $promo ? $promo->title . ' – ' . $promo->discount . '%' : $product->discount . '%' }}
-                        @else
-                            Нет
-                        @endif
-                    </p>
+                        <p>
+                            <b>Скидка:</b>
+                            {{ $product->discount ? $product->discount . '%' : 'Нет' }}
+                        </p>
 
-                    <div class="d-flex gap-1 mt-2 justify-content-center">
-                        <a href="{{ route('admin.products.edit', $product) }}" class="btn btn-sm btn-warning">Редактировать</a>
-
-                        <form action="{{ route('admin.products.delete', $product) }}" method="POST">
-                            @csrf
-                            <button class="btn btn-sm btn-danger" onclick="return confirm('Вы уверены?')">Удалить</button>
-                        </form>
                     </div>
                 </div>
-            </div>
-            @endforeach
+            @empty
+                <p>Товаров нет</p>
+            @endforelse
 
         </div>
+
     </div>
 </div>
 @endsection
