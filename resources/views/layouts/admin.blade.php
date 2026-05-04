@@ -62,72 +62,84 @@
         <div class="sidebar-wrapper">
             <nav class="mt-2">
                 <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="navigation">
-                    <li class="nav-header">МЕНЮ</li>
+    <li class="nav-header">МЕНЮ</li>
 
-                    <li class="nav-item">
-                        <a href="{{ url('admin/dashboard') }}" class="nav-link">
-                            <i class="nav-icon bi bi-speedometer2"></i>
-                            <p>Главная</p>
-                        </a>
-                    </li>
+    <!-- Главная -->
+    <li class="nav-item">
+        <a href="{{ url('admin/dashboard') }}" class="nav-link">
+            <i class="nav-icon bi bi-speedometer2"></i>
+            <p>Главная</p>
+        </a>
+    </li>
 
-                    <li class="nav-item">
-                        <a href="{{ url('admin/products') }}" class="nav-link">
-                            <i class="nav-icon bi bi-box-seam"></i>
-                            <p>Товары</p>
-                        </a>
-                    </li>
+    <!-- ТОВАРЫ -->
+    <li class="nav-header">КАТАЛОГ</li>
 
-                    <li class="nav-item">
-                        <a href="{{ url('admin/categories') }}" class="nav-link">
-                            <i class="nav-icon bi bi-tags"></i>
-                             <p>Категории</p>
-                        </a>
-                    </li>
+    <li class="nav-item">
+        <a href="{{ url('admin/categories') }}" class="nav-link">
+            <i class="nav-icon bi bi-tags"></i>
+            <p>Категории</p>
+        </a>
+    </li>
 
-                    <li class="nav-item">
-                        <a href="{{ url('admin/brands') }}" class="nav-link">
-                            <i class="nav-icon bi bi-tags"></i>
-                            <p>Бренды</p>
-                        </a>
-                    </li>
+    <li class="nav-item">
+        <a href="{{ url('admin/brands') }}" class="nav-link">
+            <i class="nav-icon bi bi-award"></i>
+            <p>Бренды</p>
+        </a>
+    </li>
 
-                    <li class="nav-item">
-                    <a href="{{ url('admin/users') }}" class="nav-link">
-                        <i class="nav-icon bi bi-people"></i>
-                        <p>Пользователи</p>
-                    </a>
-                </li>
+    <li class="nav-item">
+        <a href="{{ url('admin/products') }}" class="nav-link">
+            <i class="nav-icon bi bi-box-seam"></i>
+            <p>Товары</p>
+        </a>
+    </li>
 
-                <li class="nav-item">
-                    <a href="{{ url('admin/orders') }}" class="nav-link">
-                        <i class="nav-icon bi bi-receipt"></i>
-                        <p>Заказы</p>
-                    </a>
-                </li>
+    <!-- ЗАКАЗЫ -->
+    <li class="nav-header">ПРОДАЖИ</li>
 
-                <li class="nav-item">
-                    <a href="{{ url('admin/reviews') }}" class="nav-link">
-                        <i class="nav-icon bi bi-chat-left-text"></i>
-                        <p>Отзывы</p>
-                    </a>
-                </li>
+    <li class="nav-item">
+        <a href="{{ url('admin/orders') }}" class="nav-link">
+            <i class="nav-icon bi bi-receipt"></i>
+            <p>Заказы</p>
+        </a>
+    </li>
 
-                <li class="nav-item">
-                    <a href="{{ url('admin/promotions') }}" class="nav-link">
-                        <i class="nav-icon bi bi-gift"></i>
-                        <p>Акции и скидки</p>
-                    </a></li>
+    <!-- ПОЛЬЗОВАТЕЛИ -->
+    <li class="nav-header">ПОЛЬЗОВАТЕЛИ</li>
 
-                <li class="nav-item">
-                     <a href="{{ url('admin/partners') }}" class="nav-link">
-                        <i class="nav-icon bi bi-person-plus"></i>
-                         <p>Партнёры</p>
-                     </a>
-                </li>
+    <li class="nav-item">
+        <a href="{{ url('admin/users') }}" class="nav-link">
+            <i class="nav-icon bi bi-people"></i>
+            <p>Пользователи</p>
+        </a>
+    </li>
 
+    <li class="nav-item">
+        <a href="{{ url('admin/partners') }}" class="nav-link">
+            <i class="nav-icon bi bi-person-plus"></i>
+            <p>Партнёры</p>
+        </a>
+    </li>
 
-                </ul>
+    <!-- ДОПОЛНИТЕЛЬНО -->
+    <li class="nav-header">ДОПОЛНИТЕЛЬНО</li>
+
+    <li class="nav-item">
+        <a href="{{ url('admin/reviews') }}" class="nav-link">
+            <i class="nav-icon bi bi-chat-left-text"></i>
+            <p>Отзывы</p>
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a href="{{ url('admin/promotions') }}" class="nav-link">
+            <i class="nav-icon bi bi-gift"></i>
+            <p>Акции</p>
+        </a>
+    </li>
+</ul>
             </nav>
         </div>
     </aside>
