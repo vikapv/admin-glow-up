@@ -11,6 +11,15 @@
 <div class="app-content">
     <div class="container-fluid">
 
+        {{-- ПОИСК --}}
+        <form method="GET" class="mb-4">
+            <input type="text"
+                   name="search"
+                   class="form-control"
+                   placeholder="Поиск бренда..."
+                   value="{{ request('search') }}">
+        </form>
+
         <div class="row g-4">
 
             @forelse($brands as $brand)
@@ -26,13 +35,16 @@
                                     <img src="{{ asset($brand->logo) }}"
                                          style="width:120px;height:120px;object-fit:cover;border-radius:12px;">
                                 @else
-                                    <div style="width:120px;height:120px;
-                                                background:#f1f1f1;
-                                                display:flex;
-                                                align-items:center;
-                                                justify-content:center;
-                                                border-radius:12px;
-                                                margin:0 auto;">
+                                    <div style="
+                                        width:120px;
+                                        height:120px;
+                                        background:#f1f1f1;
+                                        display:flex;
+                                        align-items:center;
+                                        justify-content:center;
+                                        border-radius:12px;
+                                        margin:0 auto;
+                                    ">
                                         Нет фото
                                     </div>
                                 @endif

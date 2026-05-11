@@ -14,11 +14,15 @@ class ProductController extends Controller
 {
     public function index(Request $request)
 {
-    $brands = \App\Models\Brand::all();
+    $brands = Brand::all();
 
-    $query = Product::query();
+    // берём названия существующих брендов
+    $brandNames = $brands->pluck('name');
 
-    // ФИЛЬТР ПО БРЕНДУ
+    // показываем товары только существующих брендов
+    $query = Product::whereIn('brand', $brandNames);
+
+    // фильтр
     if ($request->brand) {
         $query->where('brand', $request->brand);
     }

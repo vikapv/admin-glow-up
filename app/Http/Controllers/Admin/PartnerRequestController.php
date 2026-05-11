@@ -9,10 +9,18 @@ use App\Models\Brand;
 class PartnerRequestController extends Controller
 {
     public function index()
-    {
-        $requests = PartnerRequest::all();
-        return view('admin.partners.index', compact('requests'));
+{
+    $query = PartnerRequest::query();
+
+    // фильтр по статусу
+    if (request('status')) {
+        $query->where('status', request('status'));
     }
+
+    $requests = $query->latest()->get();
+
+    return view('admin.partners.index', compact('requests'));
+}
 
     public function show(PartnerRequest $partner)
     {
@@ -35,11 +43,16 @@ class PartnerRequestController extends Controller
 }
 
     public function reject(PartnerRequest $partner)
-    {
-        $partner->update(['status' => 'rejected']);
+{
+    $partner->update([
+        'status' => 'rejected'
+    ]);
 
-        return redirect()->route('admin.partners.index');
-    }
+    // удаляем бренд если партнёр отклонён
+    Brand::where('partner_request_id', $partner->id)->delete();
+
+    return redirect()->route('admin.partners.index');
+}
 
     public function destroy(PartnerRequest $partner)
 {

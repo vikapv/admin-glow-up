@@ -57,7 +57,8 @@
                     <hr>
 
                     {{-- ACTIONS --}}
-                    @if($partner->status == 'pending')
+
+                    @if($partner->status != 'approved')
 
                         <form action="{{ route('admin.partners.approve', $partner) }}"
                               method="POST" class="mb-2">
@@ -66,6 +67,11 @@
                                 Принять
                             </button>
                         </form>
+
+                    @endif
+
+
+                    @if($partner->status != 'rejected')
 
                         <form action="{{ route('admin.partners.reject', $partner) }}"
                               method="POST">

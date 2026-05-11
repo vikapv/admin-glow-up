@@ -20,6 +20,32 @@
             <div class="alert alert-danger">{{ session('error') }}</div>
         @endif
 
+        {{-- ФИЛЬТР ПО СТАТУСУ --}}
+        <form method="GET" class="mb-4">
+            <select name="status"
+                    class="form-select"
+                    onchange="this.form.submit()">
+
+                <option value="">Все партнёры</option>
+
+                <option value="pending"
+                    {{ request('status') == 'pending' ? 'selected' : '' }}>
+                    На рассмотрении
+                </option>
+
+                <option value="approved"
+                    {{ request('status') == 'approved' ? 'selected' : '' }}>
+                    Принятые
+                </option>
+
+                <option value="rejected"
+                    {{ request('status') == 'rejected' ? 'selected' : '' }}>
+                    Отклонённые
+                </option>
+
+            </select>
+        </form>
+
         <div class="row g-4">
 
             @forelse($requests as $partner)
@@ -35,13 +61,16 @@
                                     <img src="{{ asset($partner->logo) }}"
                                          style="width:120px;height:120px;object-fit:cover;border-radius:12px;">
                                 @else
-                                    <div style="width:120px;height:120px;
-                                                background:#f1f1f1;
-                                                display:flex;
-                                                align-items:center;
-                                                justify-content:center;
-                                                border-radius:12px;
-                                                margin:0 auto;">
+                                    <div style="
+                                        width:120px;
+                                        height:120px;
+                                        background:#f1f1f1;
+                                        display:flex;
+                                        align-items:center;
+                                        justify-content:center;
+                                        border-radius:12px;
+                                        margin:0 auto;
+                                    ">
                                         Нет фото
                                     </div>
                                 @endif
@@ -52,14 +81,22 @@
 
                             {{-- STATUS --}}
                             @if($partner->status == 'pending')
-                                <span class="badge bg-warning text-dark mb-3">На рассмотрении</span>
+                                <span class="badge bg-warning text-dark mb-3">
+                                    На рассмотрении
+                                </span>
+
                             @elseif($partner->status == 'approved')
-                                <span class="badge bg-success mb-3">Принят</span>
+                                <span class="badge bg-success mb-3">
+                                    Принят
+                                </span>
+
                             @else
-                                <span class="badge bg-danger mb-3">Отклонён</span>
+                                <span class="badge bg-danger mb-3">
+                                    Отклонён
+                                </span>
                             @endif
 
-                            {{-- BUTTON --}}
+                            {{-- BUTTONS --}}
                             <div class="d-grid gap-2">
 
                                 <a href="{{ route('admin.partners.show', $partner) }}"
@@ -70,6 +107,7 @@
                                 <form action="{{ route('admin.partners.delete', $partner) }}"
                                       method="POST">
                                     @csrf
+
                                     <button class="btn btn-outline-danger btn-sm w-100">
                                         Удалить
                                     </button>
@@ -82,6 +120,7 @@
                     </div>
 
                 </div>
+
             @empty
                 <div class="col-12 text-center text-muted py-5">
                     <h5>Заявок пока нет</h5>
