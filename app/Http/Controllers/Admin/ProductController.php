@@ -32,5 +32,16 @@ class ProductController extends Controller
     return view('admin.products.index', compact('products', 'brands'));
 }
 
+    public function destroy(Product $product)
+{
+    // удалить фото если есть
+    if ($product->image && Storage::exists($product->image)) {
+        Storage::delete($product->image);
+    }
+
+    $product->delete();
+
+    return redirect()->back();
+}
     
 }

@@ -52,6 +52,17 @@
                             {{ $product->discount ? $product->discount . '%' : 'Нет' }}
                         </p>
 
+                        <form action="{{ route('admin.products.delete', $product) }}"
+      method="POST"
+      class="mt-2">
+    @csrf
+
+    <button class="btn btn-danger btn-sm w-100">
+        Удалить товар
+    </button>
+</form>
+
+
                     </div>
                 </div>
             @empty
