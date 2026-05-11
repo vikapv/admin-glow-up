@@ -17,6 +17,20 @@
             </div>
         @endif
 
+        <form method="GET" class="mb-3">
+    <div class="input-group">
+        <input type="text"
+               name="search"
+               value="{{ request('search') }}"
+               class="form-control"
+               placeholder="Поиск по имени или email">
+
+        <button class="btn btn-primary">
+            Найти
+        </button>
+    </div>
+</form>
+
         <table class="table table-bordered table-striped align-middle">
             <thead>
                 <tr>
