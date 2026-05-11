@@ -139,6 +139,14 @@
             <p>Акции</p>
         </a>
     </li>
+
+    <li class="nav-item">
+    <a href="{{ url('admin/promocodes') }}" class="nav-link">
+        <i class="nav-icon bi bi-ticket-perforated"></i>
+        <p>Промокоды</p>
+    </a>
+</li>
+
 </ul>
             </nav>
         </div>

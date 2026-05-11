@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\PartnerRequestController;
+use App\Http\Controllers\Admin\PromoCodeController;
 
 
 
@@ -123,5 +124,14 @@ Route::prefix('admin')->group(function () {
     Route::post('/partners/{partner}/approve', [PartnerRequestController::class, 'approve'])->name('admin.partners.approve');
     Route::post('/partners/{partner}/reject', [PartnerRequestController::class, 'reject'])->name('admin.partners.reject');
     Route::post('/partners/{partner}/delete', [PartnerRequestController::class, 'destroy'])->name('admin.partners.delete');
+
+    Route::get('/promocodes', [PromoCodeController::class, 'index'])
+        ->name('admin.promocodes.index');
+
+    Route::post('/promocodes', [PromoCodeController::class, 'store'])
+        ->name('admin.promocodes.store');
+
+    Route::post('/promocodes/{promoCode}/delete', [PromoCodeController::class, 'destroy'])
+        ->name('admin.promocodes.delete');
 
 });
