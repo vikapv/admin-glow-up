@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\PartnerRequestController;
 use App\Http\Controllers\Admin\PromoCodeController;
+use App\Http\Controllers\Admin\DashboardController;
 
 
 
@@ -34,9 +35,8 @@ Route::get('/logout', [AuthController::class, 'logout'])->name('admin.logout');
 Route::prefix('admin')->group(function () {
 
     // Dashboard
-     Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    });
+      Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('admin.dashboard');
 
     /*
     |--------------------------------------------------------------------------
