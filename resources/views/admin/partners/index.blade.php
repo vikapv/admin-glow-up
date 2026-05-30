@@ -1,134 +1,229 @@
 @extends('layouts.admin')
 
 @section('content')
+
 <div class="app-content-header">
     <div class="container-fluid">
         <h3 class="fw-bold">Партнёры</h3>
-        <p class="text-muted">Заявки на подключение партнёров</p>
+        <p class="text-muted mb-0">Заявки на подключение к маркетплейсу</p>
     </div>
 </div>
 
 <div class="app-content">
-    <div class="container-fluid">
+<div class="container-fluid">
 
-        {{-- уведомления --}}
-        @if(session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
-        @endif
+    {{-- МЕТРИКИ --}}
+    <div class="row g-3 mb-4">
 
-        @if(session('error'))
-            <div class="alert alert-danger">{{ session('error') }}</div>
-        @endif
-
-        {{-- ФИЛЬТР ПО СТАТУСУ --}}
-        <form method="GET" class="mb-4">
-            <select name="status"
-                    class="form-select"
-                    onchange="this.form.submit()">
-
-                <option value="">Все партнёры</option>
-
-                <option value="pending"
-                    {{ request('status') == 'pending' ? 'selected' : '' }}>
-                    На рассмотрении
-                </option>
-
-                <option value="approved"
-                    {{ request('status') == 'approved' ? 'selected' : '' }}>
-                    Принятые
-                </option>
-
-                <option value="rejected"
-                    {{ request('status') == 'rejected' ? 'selected' : '' }}>
-                    Отклонённые
-                </option>
-
-            </select>
-        </form>
-
-        <div class="row g-4">
-
-            @forelse($requests as $partner)
-                <div class="col-md-4">
-
-                    <div class="card border-0 shadow-sm h-100">
-
-                        <div class="card-body text-center">
-
-                            {{-- LOGO --}}
-                            <div class="mb-3">
-                                @if($partner->logo)
-                                    <img src="{{ asset($partner->logo) }}"
-                                         style="width:120px;height:120px;object-fit:cover;border-radius:12px;">
-                                @else
-                                    <div style="
-                                        width:120px;
-                                        height:120px;
-                                        background:#f1f1f1;
-                                        display:flex;
-                                        align-items:center;
-                                        justify-content:center;
-                                        border-radius:12px;
-                                        margin:0 auto;
-                                    ">
-                                        Нет фото
-                                    </div>
-                                @endif
-                            </div>
-
-                            {{-- NAME --}}
-                            <h5 class="fw-bold mb-2">{{ $partner->name }}</h5>
-
-                            {{-- STATUS --}}
-                            @if($partner->status == 'pending')
-                                <span class="badge bg-warning text-dark mb-3">
-                                    На рассмотрении
-                                </span>
-
-                            @elseif($partner->status == 'approved')
-                                <span class="badge bg-success mb-3">
-                                    Принят
-                                </span>
-
-                            @else
-                                <span class="badge bg-danger mb-3">
-                                    Отклонён
-                                </span>
-                            @endif
-
-                            {{-- BUTTONS --}}
-                            <div class="d-grid gap-2">
-
-                                <a href="{{ route('admin.partners.show', $partner) }}"
-                                   class="btn btn-primary btn-sm">
-                                    Просмотр
-                                </a>
-
-                                <form action="{{ route('admin.partners.delete', $partner) }}"
-                                      method="POST">
-                                    @csrf
-
-                                    <button class="btn btn-outline-danger btn-sm w-100">
-                                        Удалить
-                                    </button>
-                                </form>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
+        <div class="col-md-3 col-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body py-3">
+                    <p class="text-muted small mb-1">Всего заявок</p>
+                    <h4 class="fw-bold mb-0">{{ $stats['total'] }}</h4>
                 </div>
+            </div>
+        </div>
 
-            @empty
-                <div class="col-12 text-center text-muted py-5">
-                    <h5>Заявок пока нет</h5>
+        <div class="col-md-3 col-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body py-3">
+                    <p class="text-muted small mb-1">На рассмотрении</p>
+                    <h4 class="fw-bold mb-0 text-warning">{{ $stats['pending'] }}</h4>
                 </div>
-            @endforelse
+            </div>
+        </div>
 
+        <div class="col-md-3 col-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body py-3">
+                    <p class="text-muted small mb-1">Принятых</p>
+                    <h4 class="fw-bold mb-0 text-success">{{ $stats['approved'] }}</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body py-3">
+                    <p class="text-muted small mb-1">Отклонённых</p>
+                    <h4 class="fw-bold mb-0 text-danger">{{ $stats['rejected'] }}</h4>
+                </div>
+            </div>
         </div>
 
     </div>
+
+    {{-- ФИЛЬТРЫ --}}
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body py-3">
+            <form method="GET" class="row g-2 align-items-center">
+
+                <div class="col-md-5">
+                    <input type="text"
+                           name="search"
+                           class="form-control"
+                           placeholder="Поиск по названию или email..."
+                           value="{{ request('search') }}">
+                </div>
+
+                <div class="col-md-4">
+                    <select name="status" class="form-select" onchange="this.form.submit()">
+                        <option value="">Все заявки</option>
+                        <option value="pending"
+                            {{ request('status') == 'pending' ? 'selected' : '' }}>
+                            На рассмотрении
+                        </option>
+                        <option value="approved"
+                            {{ request('status') == 'approved' ? 'selected' : '' }}>
+                            Принятые
+                        </option>
+                        <option value="rejected"
+                            {{ request('status') == 'rejected' ? 'selected' : '' }}>
+                            Отклонённые
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-md-3 d-flex gap-2">
+                    <button class="btn btn-primary w-100">Найти</button>
+                    @if(request('search') || request('status'))
+                        <a href="{{ route('admin.partners.index') }}"
+                           class="btn btn-outline-secondary">
+                            ✕
+                        </a>
+                    @endif
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    {{-- FLASH --}}
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
+    {{-- КАРТОЧКИ --}}
+    <div class="row g-4">
+        @forelse($requests as $partner)
+            <div class="col-md-4 col-lg-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body d-flex flex-column">
+
+                        {{-- Лого + инициалы если нет лого --}}
+                        <div class="text-center mb-3">
+                            @if($partner->logo)
+                                <img src="{{ asset($partner->logo) }}"
+                                     style="width:80px;height:80px;object-fit:cover;
+                                            border-radius:12px;">
+                            @else
+                                <div style="width:80px;height:80px;border-radius:12px;
+                                            background:#e9ecef;display:flex;
+                                            align-items:center;justify-content:center;
+                                            font-size:24px;font-weight:700;color:#6c757d;
+                                            margin:0 auto;">
+                                    {{ strtoupper(substr($partner->name, 0, 2)) }}
+                                </div>
+                            @endif
+                        </div>
+
+                        {{-- Название --}}
+                        <h6 class="fw-bold text-center mb-1">{{ $partner->name }}</h6>
+
+                        {{-- Email --}}
+                        <p class="text-center text-muted small mb-2">
+                            {{ $partner->email }}
+                        </p>
+
+                        {{-- Статус --}}
+                        <div class="text-center mb-3">
+                            @if($partner->status == 'pending')
+                                <span class="badge bg-warning text-dark">На рассмотрении</span>
+                            @elseif($partner->status == 'approved')
+                                <span class="badge bg-success">Принят</span>
+                            @else
+                                <span class="badge bg-danger">Отклонён</span>
+                            @endif
+                        </div>
+
+                        {{-- Дата подачи --}}
+                        <p class="text-center text-muted mb-3" style="font-size:11px;">
+                            Подано: {{ $partner->created_at->format('d.m.Y') }}
+                        </p>
+
+                        {{-- Быстрые действия для pending --}}
+                        @if($partner->status == 'pending')
+                            <div class="row g-1 mb-2">
+                                <div class="col-6">
+                                    <form action="{{ route('admin.partners.approve', $partner) }}"
+                                          method="POST">
+                                        @csrf
+                                        <button class="btn btn-success btn-sm w-100">
+                                            ✓ Принять
+                                        </button>
+                                    </form>
+                                </div>
+                                <div class="col-6">
+                                    <form action="{{ route('admin.partners.reject', $partner) }}"
+                                          method="POST">
+                                        @csrf
+                                        <button class="btn btn-warning btn-sm w-100 text-dark">
+                                            ✕ Откл.
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        @endif
+
+                        <div class="mt-auto d-grid gap-2">
+                            <a href="{{ route('admin.partners.show', $partner) }}"
+                               class="btn btn-outline-primary btn-sm">
+                                Подробнее →
+                            </a>
+                            <form action="{{ route('admin.partners.delete', $partner) }}"
+                                  method="POST"
+                                  onsubmit="return confirm('Удалить заявку «{{ $partner->name }}»?')">
+                                @csrf
+                                <button class="btn btn-outline-danger btn-sm w-100">
+                                    <i class="bi bi-trash"></i> Удалить
+                                </button>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        @empty
+            <div class="col-12 text-center text-muted py-5">
+                <i class="bi bi-person-plus fs-1 d-block mb-3 opacity-25"></i>
+                <h5>Заявок пока нет</h5>
+                <p>Здесь появятся заявки от партнёров на подключение к маркетплейсу</p>
+            </div>
+        @endforelse
+    </div>
+
+    {{-- ПАГИНАЦИЯ --}}
+    @if($requests->hasPages())
+        <div class="d-flex justify-content-between align-items-center mt-4">
+            <small class="text-muted">
+                Показано {{ $requests->firstItem() }}–{{ $requests->lastItem() }}
+                из {{ $requests->total() }}
+            </small>
+            {{ $requests->withQueryString()->links() }}
+        </div>
+    @endif
+
 </div>
+</div>
+
 @endsection
