@@ -95,6 +95,9 @@ Route::prefix('admin')->group(function () {
     Route::get('/orders/show/{order}', [OrderController::class, 'show'])
     ->name('admin.orders.show');
 
+    Route::post('/orders/{order}/status', [OrderController::class, 'updateStatus'])
+    ->name('admin.orders.status');
+
     /*
     |--------------------------------------------------------------------------
     | REVIEWS
