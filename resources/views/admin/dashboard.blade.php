@@ -4,70 +4,82 @@
 
 <div class="app-content-header">
     <div class="container-fluid">
-        <h3>Панель управления</h3>
+        <h3>Аналитика брендов</h3>
     </div>
 </div>
 
 <div class="app-content">
 <div class="container-fluid">
 
-    {{-- ПОИСК БРЕНДА --}}
+    {{-- 🔎 SEARCH --}}
     <form method="GET" class="mb-4">
-        <select name="brand" class="form-control" onchange="this.form.submit()">
-            <option value="">Выберите бренд</option>
 
-            @foreach($brands as $brand)
-                <option value="{{ $brand->name }}"
-                    {{ $selectedBrand == $brand->name ? 'selected' : '' }}>
-                    {{ $brand->name }}
-                </option>
-            @endforeach
+        <div class="input-group">
 
-        </select>
+            <input
+                type="text"
+                name="search"
+                class="form-control"
+                placeholder="Поиск бренда..."
+                value="{{ request('search') }}"
+            >
+
+            <button class="btn btn-primary">
+                Найти
+            </button>
+
+        </div>
+
     </form>
 
-    {{-- СТАТИСТИКА --}}
-    @if($stats)
+    {{-- 📊 CARDS --}}
+    <div class="row g-3">
 
-        <div class="row g-3">
+        @forelse($data as $item)
 
-            <div class="col-md-3">
-                <div class="card p-3 shadow-sm">
-                    <p>Товары</p>
-                    <h3>{{ $stats['products_count'] }}</h3>
+            <div class="col-md-6 col-lg-4">
+
+                <div class="card shadow-sm p-3 h-100">
+
+                    <h4 class="mb-3">{{ $item['brand'] }}</h4>
+
+                    <div class="row">
+
+                        <div class="col-6">
+                            <p class="text-muted">Товары</p>
+                            <h5>{{ $item['products_count'] }}</h5>
+                        </div>
+
+                        <div class="col-6">
+                            <p class="text-muted">Заказы</p>
+                            <h5>{{ $item['orders_count'] }}</h5>
+                        </div>
+
+                        <div class="col-6 mt-3">
+                            <p class="text-muted">Сумма заказов</p>
+                            <h5>{{ $item['total_sum'] }} ₸</h5>
+                        </div>
+
+                        <div class="col-6 mt-3">
+                            <p class="text-muted">Средняя цена</p>
+                            <h5>{{ round($item['average_price']) }} ₸</h5>
+                        </div>
+
+                    </div>
+
                 </div>
+
             </div>
 
-            <div class="col-md-3">
-                <div class="card p-3 shadow-sm">
-                    <p>Заказы</p>
-                    <h3>{{ $stats['orders_count'] }}</h3>
-                </div>
+        @empty
+
+            <div class="col-12 text-center text-muted">
+                Бренды не найдены
             </div>
 
-            <div class="col-md-3">
-                <div class="card p-3 shadow-sm">
-                    <p>Сумма заказов</p>
-                    <h3>{{ $stats['total_sum'] }} ₸</h3>
-                </div>
-            </div>
+        @endforelse
 
-            <div class="col-md-3">
-                <div class="card p-3 shadow-sm">
-                    <p>Средняя цена</p>
-                    <h3>{{ round($stats['average_price']) }} ₸</h3>
-                </div>
-            </div>
-
-        </div>
-
-    @else
-
-        <div class="text-muted">
-            Выберите бренд чтобы увидеть аналитику
-        </div>
-
-    @endif
+    </div>
 
 </div>
 </div>

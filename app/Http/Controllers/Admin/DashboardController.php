@@ -11,32 +11,40 @@ use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
-  public function index(Request $request)
-{
-    $brands = Brand::all();
+    public function index(Request $request)
+    {
+        $query = Brand::query();
 
-    $selectedBrand = $request->brand;
+        // 🔎 поиск бренда
+        if ($request->search) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
 
-    $stats = null;
+        $brands = $query->get();
 
-    if ($selectedBrand) {
+        $data = [];
 
-        $productsQuery = Product::where('brand', $selectedBrand);
+        foreach ($brands as $brand) {
 
-        $orderItemsQuery = OrderItem::where('brand', $selectedBrand);
+            $productsQuery = Product::where('brand', $brand->name);
+            $orderItemsQuery = OrderItem::where('brand', $brand->name);
 
-        $stats = [
-            'products_count' => $productsQuery->count(),
-            'orders_count' => $orderItemsQuery->distinct('order_id')->count('order_id'),
-            'total_sum' => $orderItemsQuery->sum(DB::raw('price * quantity')),
-            'average_price' => $productsQuery->avg('price'),
-        ];
+            $data[] = [
+                'brand' => $brand->name,
+
+                'products_count' => $productsQuery->count(),
+
+                'orders_count' => $orderItemsQuery
+                    ->distinct('order_id')
+                    ->count('order_id'),
+
+                'total_sum' => $orderItemsQuery
+                    ->sum(DB::raw('price * quantity')),
+
+                'average_price' => $productsQuery->avg('price'),
+            ];
+        }
+
+        return view('admin.dashboard', compact('data'));
     }
-
-    return view('admin.dashboard', [
-        'brands' => $brands,          
-        'stats' => $stats,
-        'selectedBrand' => $selectedBrand
-    ]);
-}
 }
