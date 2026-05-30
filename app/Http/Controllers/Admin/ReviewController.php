@@ -11,41 +11,46 @@ use Illuminate\Http\Request;
 class ReviewController extends Controller
 {
     public function index(Request $request)
-{
-    $brands = Brand::all();
+    {
+        $brands = Brand::all();
+        $brandNames = $brands->pluck('name');
 
-    $brandNames = $brands->pluck('name');
+        $query = Product::withCount('reviews')
+            ->has('reviews')
+            ->whereIn('brand', $brandNames);
 
-    $products = Product::withCount('reviews')
-        ->has('reviews')
-        ->whereIn('brand', $brandNames);
+        if ($request->brand) {
+            $query->where('brand', $request->brand);
+        }
 
-    if ($request->brand) {
-        $products->where('brand', $request->brand);
+        // поиск по названию товара
+        if ($request->search) {
+            $query->where('title', 'like', '%' . $request->search . '%');
+        }
+
+        // сортировка — сначала с наибольшим числом отзывов
+        $products = $query->orderByDesc('reviews_count')->paginate(12);
+
+        // общая статистика
+        $stats = [
+            'total_reviews'   => Review::count(),
+            'total_products'  => Product::has('reviews')->count(),
+            'avg_per_product' => round(Review::count() / max(Product::has('reviews')->count(), 1), 1),
+        ];
+
+        return view('admin.reviews.index', compact('products', 'brands', 'stats'));
     }
-
-    $products = $products->get();
-
-    return view('admin.reviews.index', compact(
-        'products',
-        'brands'
-    ));
-}
 
     public function show(Product $product)
     {
         $product->load('reviews');
-
         return view('admin.reviews.show', compact('product'));
     }
 
     public function destroy(Review $review)
     {
+        $productId = $review->product_id;
         $review->delete();
-
-        return back()->with(
-            'success',
-            'Отзыв удалён'
-        );
+        return back()->with('success', 'Отзыв удалён');
     }
 }
