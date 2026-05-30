@@ -25,25 +25,26 @@
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item dropdown user-menu">
                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                        <img src="{{ asset('assets/img/user2-160x160.jpg') }}"
-                             class="user-image rounded-circle shadow" alt="Пользователь"/>
+                        <img src="https://avatars.mds.yandex.net/i?id=097544486dc9cf50ecad5c17f1e7596680b1d0b4-2463541-images-thumbs&n=13"
+     class="user-image rounded-circle shadow"
+     alt="Пользователь"/>
                         <span class="d-none d-md-inline">Glow-Up Админ</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
                         <li class="user-header text-bg-primary">
-                            <img src="{{ asset('assets/img/user2-160x160.jpg') }}"
-                                 class="rounded-circle shadow" alt="Пользователь"/>
+                            <img src="https://avatars.mds.yandex.net/i?id=097544486dc9cf50ecad5c17f1e7596680b1d0b4-2463541-images-thumbs&n=13"
+     class="user-image rounded-circle shadow"
+     alt="Пользователь"/>
                             <p>
                                 Glow-Up Админ - Веб-разработчик
                                 <small>Участник с нояб. 2023</small>
                             </p>
                         </li>
-                        <li class="user-footer">
-                            <a href="#" class="btn btn-default btn-flat">Профиль</a>
-                            <a href="{{ route('admin.logout') }}" class="btn btn-danger">
-                                <i class="bi bi-box-arrow-right"></i> Выйти
-                            </a>
-                        </li>
+                        <li class="user-footer text-center">
+    <a href="{{ route('admin.logout') }}" class="btn btn-danger px-4">
+        <i class="bi bi-box-arrow-right"></i> Выйти
+    </a>
+</li>
                     </ul>
                 </li>
             </ul>

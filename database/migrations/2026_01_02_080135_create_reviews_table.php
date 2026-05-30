@@ -10,10 +10,15 @@ return new class extends Migration
     {
         Schema::create('reviews', function (Blueprint $table) {
             $table->id();
+
+            $table->foreignId('product_id')
+                ->constrained('products')
+                ->cascadeOnDelete();
+
             $table->string('user_name');
-            $table->string('product_name');
+
             $table->text('content');
-            $table->string('product_image')->nullable();
+
             $table->timestamps();
         });
     }

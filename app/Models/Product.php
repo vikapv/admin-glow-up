@@ -17,4 +17,10 @@ class Product extends Model
         'discount',
         'image'
     ];
+
+     public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+    
 }

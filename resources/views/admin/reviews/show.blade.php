@@ -1,58 +1,77 @@
 @extends('layouts.admin')
 
 @section('content')
+
 <div class="app-content-header">
     <div class="container-fluid">
-        <h3>Детали отзыва #{{ $review->id }}</h3>
+        <h3>{{ $product->title }}</h3>
     </div>
 </div>
 
 <div class="app-content">
-    <div class="container-fluid">
+<div class="container-fluid">
 
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <div class="row">
+    <div class="card mb-4">
+        <div class="card-body">
 
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <span class="text-muted">Пользователь</span>
-                            <h6 class="fw-bold">{{ $review->user_name }}</h6>
-                        </div>
+            <h4>{{ $product->title }}</h4>
 
-                        <div class="mb-3">
-                            <span class="text-muted">Товар</span>
-                            <h6 class="fw-bold">{{ $review->product_name }}</h6>
-                        </div>
+            <p>
+                <b>Бренд:</b>
+                {{ $product->brand }}
+            </p>
 
-                        <div class="mb-3">
-                            <span class="text-muted">Отзыв</span>
-                            <div class="border rounded p-3 bg-light">
-                                {{ $review->content }}
-                            </div>
-                        </div>
-                    </div>
+            <p>
+                <b>Всего отзывов:</b>
+                {{ $product->reviews->count() }}
+            </p>
 
-                    <div class="col-md-6 text-center">
-                        <span class="text-muted d-block mb-2">Фото товара</span>
+        </div>
+    </div>
 
-                        <img
-                            src="{{ $review->product_image ?? 'https://via.placeholder.com/200' }}"
-                            style="width:200px;height:200px;object-fit:cover;border-radius:8px;"
-                        >
-                    </div>
+    @foreach($product->reviews as $review)
 
-                </div>
+    <div class="card mb-3">
 
-                <div class="mt-4">
-                    <a href="{{ route('admin.reviews.index') }}" class="btn btn-secondary">
-                        Назад к списку
-                    </a>
-                </div>
+        <div class="card-body">
 
-            </div>
+            <h6>
+                {{ $review->user_name }}
+            </h6>
+
+            <p>
+                {{ $review->content }}
+            </p>
+
+            <form
+                action="{{ route('admin.reviews.delete', $review) }}"
+                method="POST"
+            >
+                @csrf
+
+                <button
+                    class="btn btn-danger btn-sm"
+                    onclick="return confirm('Удалить отзыв?')"
+                >
+                    Удалить отзыв
+                </button>
+
+            </form>
+
         </div>
 
     </div>
+
+@endforeach
+
+<div class="mt-4">
+    <a href="{{ route('admin.reviews.index') }}"
+       class="btn btn-secondary">
+        ← Назад к отзывам
+    </a>
 </div>
+
+</div>
+</div>
+
 @endsection

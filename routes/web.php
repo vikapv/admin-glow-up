@@ -100,11 +100,17 @@ Route::prefix('admin')->group(function () {
     | REVIEWS
     |--------------------------------------------------------------------------
     */
-    Route::get('/reviews', [\App\Http\Controllers\Admin\ReviewController::class, 'index'])
+    Route::get('/reviews',
+    [\App\Http\Controllers\Admin\ReviewController::class, 'index'])
     ->name('admin.reviews.index');
-    
-    Route::get('/reviews/show/{review}', [\App\Http\Controllers\Admin\ReviewController::class, 'show'])
+
+Route::get('/reviews/product/{product}',
+    [\App\Http\Controllers\Admin\ReviewController::class, 'show'])
     ->name('admin.reviews.show');
+
+Route::post('/reviews/delete/{review}',
+    [\App\Http\Controllers\Admin\ReviewController::class, 'destroy'])
+    ->name('admin.reviews.delete');
 
     /*
     |--------------------------------------------------------------------------
