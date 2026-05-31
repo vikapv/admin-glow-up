@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\PartnerRequestController;
 use App\Http\Controllers\Admin\PromoCodeController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\SupportTicketController;
 
 /*
 |--------------------------------------------------------------------------
@@ -179,4 +180,23 @@ Route::prefix('admin')->middleware('auth')->group(function () {
 
     Route::post('/promocodes/{promoCode}/delete', [PromoCodeController::class, 'destroy'])
         ->name('admin.promocodes.delete');
+
+
+    /*
+    |----------------------------------------------------------------------
+    | Support
+    |----------------------------------------------------------------------
+    */
+
+    Route::get('/support', [SupportTicketController::class, 'index'])
+    ->name('admin.support.index');
+
+    Route::get('/support/{ticket}', [SupportTicketController::class, 'show'])
+    ->name('admin.support.show');
+
+    Route::post('/support/{ticket}/reply', [SupportTicketController::class, 'reply'])
+    ->name('admin.support.reply');
+
+    Route::post('/support/{ticket}/delete', [SupportTicketController::class, 'destroy'])
+    ->name('admin.support.delete');
 });

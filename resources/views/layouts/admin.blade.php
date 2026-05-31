@@ -204,6 +204,20 @@
                         </a>
                     </li>
 
+                    <li class="nav-item">
+    <a href="{{ url('admin/support') }}"
+       class="nav-link {{ request()->is('admin/support*') ? 'active' : '' }}">
+        <i class="nav-icon bi bi-headset"></i>
+        <p>
+            Поддержка
+            @php $newTickets = \App\Models\SupportTicket::where('status', 'new')->count(); @endphp
+            @if($newTickets > 0)
+                <span class="badge bg-danger ms-auto">{{ $newTickets }}</span>
+            @endif
+        </p>
+    </a>
+</li>
+
                 </ul>
             </nav>
         </div>
