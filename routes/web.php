@@ -146,4 +146,7 @@ Route::post('/reviews/delete/{review}',
     Route::post('/promocodes/{promoCode}/delete', [PromoCodeController::class, 'destroy'])
         ->name('admin.promocodes.delete');
 
+    Route::post('/promocodes/{promoCode}/toggle', [PromoCodeController::class, 'toggleActive'])
+    ->name('admin.promocodes.toggle');
+
 });

@@ -10,26 +10,50 @@ class PromoCodeController extends Controller
 {
     public function index()
     {
-        $promos = PromoCode::all();
-        return view('admin.promocodes.index', compact('promos'));
+        $promos = PromoCode::latest()->paginate(15);
+
+        $stats = [
+            'total'    => PromoCode::count(),
+            'active'   => PromoCode::where('is_active', true)->count(),
+            'inactive' => PromoCode::where('is_active', false)->count(),
+        ];
+
+        return view('admin.promocodes.index', compact('promos', 'stats'));
     }
 
     public function store(PromoCodeRequest $request)
-{
-    PromoCode::create([
-        'code' => strtoupper($request->code), 
-        'discount' => $request->discount,
-        'limit' => $request->limit,
-        'is_active' => true,
-    ]);
+    {
+        // проверяем что такой код ещё не существует
+        if (PromoCode::where('code', strtoupper($request->code))->exists()) {
+            return redirect()->back()
+                ->withErrors(['code' => 'Промокод с таким кодом уже существует'])
+                ->withInput();
+        }
 
-    return redirect()->back()->with('success', 'Промокод добавлен');
-}
+        PromoCode::create([
+            'code'      => strtoupper($request->code),
+            'discount'  => $request->discount,
+            'limit'     => $request->limit ?: null,
+            'is_active' => true,
+        ]);
+
+        return redirect()->back()->with('success', 'Промокод «' . strtoupper($request->code) . '» добавлен');
+    }
+
+    public function toggleActive(PromoCode $promoCode)
+    {
+        $promoCode->update(['is_active' => !$promoCode->is_active]);
+
+        $status = $promoCode->is_active ? 'активирован' : 'отключён';
+
+        return redirect()->back()->with('success', 'Промокод «' . $promoCode->code . '» ' . $status);
+    }
 
     public function destroy(PromoCode $promoCode)
     {
+        $code = $promoCode->code;
         $promoCode->delete();
 
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Промокод «' . $code . '» удалён');
     }
 }
