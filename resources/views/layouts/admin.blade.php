@@ -70,19 +70,17 @@
                              alt="Пользователь"/>
                         <span class="d-none d-md-inline">Glow-Up Админ</span>
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
-                        <li class="user-header text-bg-primary">
-                            <img src="https://avatars.mds.yandex.net/i?id=097544486dc9cf50ecad5c17f1e7596680b1d0b4-2463541-images-thumbs&n=13"
-                                 class="user-image rounded-circle shadow"
-                                 alt="Пользователь"/>
-                            <p>Glow-Up Админ</p>
-                        </li>
-                        <li class="user-footer text-center">
-                            <a href="{{ route('admin.logout') }}" class="btn btn-danger px-4">
-                                <i class="bi bi-box-arrow-right"></i> Выйти
-                            </a>
-                        </li>
-                    </ul>
+                    <ul class="dropdown-menu dropdown-menu-end p-2" style="min-width: 200px;">
+
+    <li>
+        <a href="{{ route('admin.logout') }}"
+           class="btn btn-danger w-100">
+            <i class="bi bi-box-arrow-right"></i>
+            Выйти
+        </a>
+    </li>
+
+</ul>
                 </li>
 
             </ul>
