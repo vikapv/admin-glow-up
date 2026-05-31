@@ -13,140 +13,170 @@ use App\Http\Controllers\Admin\PartnerRequestController;
 use App\Http\Controllers\Admin\PromoCodeController;
 use App\Http\Controllers\Admin\DashboardController;
 
-
-
 /*
 |--------------------------------------------------------------------------
-| AUTH (LOGIN)
+| ПУБЛИЧНЫЕ МАРШРУТЫ — вход/выход (без авторизации)
 |--------------------------------------------------------------------------
 */
-
 Route::get('/', [AuthController::class, 'showLoginForm'])->name('admin.login');
 Route::post('/login', [AuthController::class, 'login'])->name('admin.login.submit');
 Route::get('/logout', [AuthController::class, 'logout'])->name('admin.logout');
 
-
-
 /*
 |--------------------------------------------------------------------------
-| ADMIN PANEL
+| ЗАЩИЩЁННЫЕ МАРШРУТЫ — только для авторизованных
 |--------------------------------------------------------------------------
 */
-Route::prefix('admin')->group(function () {
+Route::prefix('admin')->middleware('auth')->group(function () {
 
     // Dashboard
-      Route::get('/dashboard', [DashboardController::class, 'index'])
+    Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('admin.dashboard');
 
     /*
-    |--------------------------------------------------------------------------
-    | PRODUCTS (через контроллер)
-    |--------------------------------------------------------------------------
+    |----------------------------------------------------------------------
+    | PRODUCTS
+    |----------------------------------------------------------------------
     */
-     Route::get('/products', [ProductController::class, 'index'])->name('admin.products.index');
-     Route::post('/admin/products/{product}/delete', [ProductController::class, 'destroy'])->name('admin.products.delete');
+    Route::get('/products', [ProductController::class, 'index'])
+        ->name('admin.products.index');
 
-     Route::get('/products/{product}', [ProductController::class, 'show'])
-    ->name('admin.products.show');
-   
+    Route::get('/products/{product}', [ProductController::class, 'show'])
+        ->name('admin.products.show');
 
-    
+    Route::post('/products/{product}/delete', [ProductController::class, 'destroy'])
+        ->name('admin.products.delete');
+
     /*
-    |--------------------------------------------------------------------------
+    |----------------------------------------------------------------------
     | CATEGORIES
-    |--------------------------------------------------------------------------
+    |----------------------------------------------------------------------
     */
-    Route::get('/categories', [CategoryController::class, 'index'])->name('admin.categories.index');
-    Route::get('/categories/create', [CategoryController::class, 'create'])->name('admin.categories.create');
-    Route::post('/categories', [CategoryController::class, 'store'])->name('admin.categories.store');
-    Route::get('/categories/edit/{category}', [CategoryController::class, 'edit'])->name('admin.categories.edit');
-    Route::post('/categories/update/{category}', [CategoryController::class, 'update'])->name('admin.categories.update');
-    Route::post('/categories/delete/{category}', [CategoryController::class, 'destroy'])->name('admin.categories.delete');
+    Route::get('/categories', [CategoryController::class, 'index'])
+        ->name('admin.categories.index');
 
+    Route::get('/categories/create', [CategoryController::class, 'create'])
+        ->name('admin.categories.create');
+
+    Route::post('/categories', [CategoryController::class, 'store'])
+        ->name('admin.categories.store');
+
+    Route::get('/categories/edit/{category}', [CategoryController::class, 'edit'])
+        ->name('admin.categories.edit');
+
+    Route::post('/categories/update/{category}', [CategoryController::class, 'update'])
+        ->name('admin.categories.update');
+
+    Route::post('/categories/delete/{category}', [CategoryController::class, 'destroy'])
+        ->name('admin.categories.delete');
 
     /*
-    |--------------------------------------------------------------------------
+    |----------------------------------------------------------------------
     | BRANDS
-    |--------------------------------------------------------------------------
+    |----------------------------------------------------------------------
     */
+    Route::get('/brands', [BrandController::class, 'index'])
+        ->name('admin.brands.index');
 
-    Route::get('/brands', [BrandController::class, 'index'])->name('admin.brands.index');
-    Route::get('/brands/{brand}', [BrandController::class, 'show'])->name('admin.brands.show');
-
+    Route::get('/brands/{brand}', [BrandController::class, 'show'])
+        ->name('admin.brands.show');
 
     /*
-    |--------------------------------------------------------------------------
-    | USERS
-    |--------------------------------------------------------------------------
+    |----------------------------------------------------------------------
+    | USERS (покупатели)
+    |----------------------------------------------------------------------
     */
-    
-   Route::get('/users', [AdminUserController::class, 'index'])
+    Route::get('/users', [AdminUserController::class, 'index'])
         ->name('admin.users.index');
 
     Route::post('/users/{adminUser}/status', [AdminUserController::class, 'updateStatus'])
         ->name('admin.users.status');
 
-
     /*
-    |--------------------------------------------------------------------------
+    |----------------------------------------------------------------------
     | ORDERS
-    |--------------------------------------------------------------------------
+    |----------------------------------------------------------------------
     */
     Route::get('/orders', [OrderController::class, 'index'])
-    ->name('admin.orders.index');
-    
+        ->name('admin.orders.index');
+
     Route::get('/orders/show/{order}', [OrderController::class, 'show'])
-    ->name('admin.orders.show');
+        ->name('admin.orders.show');
 
     Route::post('/orders/{order}/status', [OrderController::class, 'updateStatus'])
-    ->name('admin.orders.status');
+        ->name('admin.orders.status');
 
     /*
-    |--------------------------------------------------------------------------
+    |----------------------------------------------------------------------
     | REVIEWS
-    |--------------------------------------------------------------------------
+    |----------------------------------------------------------------------
     */
-    Route::get('/reviews',
-    [\App\Http\Controllers\Admin\ReviewController::class, 'index'])
-    ->name('admin.reviews.index');
+    Route::get('/reviews', [ReviewController::class, 'index'])
+        ->name('admin.reviews.index');
 
-Route::get('/reviews/product/{product}',
-    [\App\Http\Controllers\Admin\ReviewController::class, 'show'])
-    ->name('admin.reviews.show');
+    Route::get('/reviews/product/{product}', [ReviewController::class, 'show'])
+        ->name('admin.reviews.show');
 
-Route::post('/reviews/delete/{review}',
-    [\App\Http\Controllers\Admin\ReviewController::class, 'destroy'])
-    ->name('admin.reviews.delete');
+    Route::post('/reviews/delete/{review}', [ReviewController::class, 'destroy'])
+        ->name('admin.reviews.delete');
 
     /*
-    |--------------------------------------------------------------------------
+    |----------------------------------------------------------------------
     | PROMOTIONS
-    |--------------------------------------------------------------------------
+    |----------------------------------------------------------------------
     */
-      Route::get('/promotions', [PromotionController::class, 'index'])->name('admin.promotions.index');
-    Route::get('/promotions/create', [PromotionController::class, 'create'])->name('admin.promotions.create');
-    Route::post('/promotions', [PromotionController::class, 'store'])->name('admin.promotions.store');
-    Route::get('/promotions/edit/{promotion}', [PromotionController::class, 'edit'])->name('admin.promotions.edit');
-    Route::put('/promotions/update/{promotion}', [PromotionController::class, 'update'])->name('admin.promotions.update');
-    Route::post('/promotions/delete/{promotion}', [PromotionController::class, 'destroy'])->name('admin.promotions.delete');
+    Route::get('/promotions', [PromotionController::class, 'index'])
+        ->name('admin.promotions.index');
 
-    Route::get('/partners', [PartnerRequestController::class, 'index'])->name('admin.partners.index');
-    Route::get('/partners/{partner}', [PartnerRequestController::class, 'show'])->name('admin.partners.show');
+    Route::get('/promotions/create', [PromotionController::class, 'create'])
+        ->name('admin.promotions.create');
 
-    Route::post('/partners/{partner}/approve', [PartnerRequestController::class, 'approve'])->name('admin.partners.approve');
-    Route::post('/partners/{partner}/reject', [PartnerRequestController::class, 'reject'])->name('admin.partners.reject');
-    Route::post('/partners/{partner}/delete', [PartnerRequestController::class, 'destroy'])->name('admin.partners.delete');
+    Route::post('/promotions', [PromotionController::class, 'store'])
+        ->name('admin.promotions.store');
 
+    Route::get('/promotions/edit/{promotion}', [PromotionController::class, 'edit'])
+        ->name('admin.promotions.edit');
+
+    Route::put('/promotions/update/{promotion}', [PromotionController::class, 'update'])
+        ->name('admin.promotions.update');
+
+    Route::post('/promotions/delete/{promotion}', [PromotionController::class, 'destroy'])
+        ->name('admin.promotions.delete');
+
+    /*
+    |----------------------------------------------------------------------
+    | PARTNERS
+    |----------------------------------------------------------------------
+    */
+    Route::get('/partners', [PartnerRequestController::class, 'index'])
+        ->name('admin.partners.index');
+
+    Route::get('/partners/{partner}', [PartnerRequestController::class, 'show'])
+        ->name('admin.partners.show');
+
+    Route::post('/partners/{partner}/approve', [PartnerRequestController::class, 'approve'])
+        ->name('admin.partners.approve');
+
+    Route::post('/partners/{partner}/reject', [PartnerRequestController::class, 'reject'])
+        ->name('admin.partners.reject');
+
+    Route::post('/partners/{partner}/delete', [PartnerRequestController::class, 'destroy'])
+        ->name('admin.partners.delete');
+
+    /*
+    |----------------------------------------------------------------------
+    | PROMOCODES
+    |----------------------------------------------------------------------
+    */
     Route::get('/promocodes', [PromoCodeController::class, 'index'])
         ->name('admin.promocodes.index');
 
     Route::post('/promocodes', [PromoCodeController::class, 'store'])
         ->name('admin.promocodes.store');
 
+    Route::post('/promocodes/{promoCode}/toggle', [PromoCodeController::class, 'toggleActive'])
+        ->name('admin.promocodes.toggle');
+
     Route::post('/promocodes/{promoCode}/delete', [PromoCodeController::class, 'destroy'])
         ->name('admin.promocodes.delete');
-
-    Route::post('/promocodes/{promoCode}/toggle', [PromoCodeController::class, 'toggleActive'])
-    ->name('admin.promocodes.toggle');
-
 });
