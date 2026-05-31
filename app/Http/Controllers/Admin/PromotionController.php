@@ -4,14 +4,21 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Promotion;
-use Illuminate\Http\Request;
+use App\Http\Requests\PromotionRequest;
 
 class PromotionController extends Controller
 {
     public function index()
     {
-        $promotions = Promotion::all();
-        return view('admin.promotions.index', compact('promotions'));
+        $promotions = Promotion::latest()->paginate(10);
+
+        $stats = [
+            'total'        => Promotion::count(),
+            'max_discount' => Promotion::max('discount') ?? 0,
+            'avg_discount' => round(Promotion::avg('discount') ?? 0),
+        ];
+
+        return view('admin.promotions.index', compact('promotions', 'stats'));
     }
 
     public function create()
@@ -19,16 +26,12 @@ class PromotionController extends Controller
         return view('admin.promotions.create');
     }
 
-    public function store(Request $request)
+    public function store(PromotionRequest $request)
     {
-        $request->validate([
-            'title' => 'required|string',
-            'description' => 'nullable|string',
-            'discount' => 'required|integer|min:0',
-        ]);
+        Promotion::create($request->validated());
 
-        Promotion::create($request->all());
-        return redirect()->route('admin.promotions.index');
+        return redirect()->route('admin.promotions.index')
+            ->with('success', 'Акция «' . $request->title . '» добавлена');
     }
 
     public function edit(Promotion $promotion)
@@ -36,21 +39,20 @@ class PromotionController extends Controller
         return view('admin.promotions.edit', compact('promotion'));
     }
 
-    public function update(Request $request, Promotion $promotion)
+    public function update(PromotionRequest $request, Promotion $promotion)
     {
-        $request->validate([
-            'title' => 'required|string',
-            'description' => 'nullable|string',
-            'discount' => 'required|integer|min:0',
-        ]);
+        $promotion->update($request->validated());
 
-        $promotion->update($request->all());
-        return redirect()->route('admin.promotions.index');
+        return redirect()->route('admin.promotions.index')
+            ->with('success', 'Акция «' . $promotion->title . '» обновлена');
     }
 
     public function destroy(Promotion $promotion)
     {
+        $title = $promotion->title;
         $promotion->delete();
-        return redirect()->route('admin.promotions.index');
+
+        return redirect()->route('admin.promotions.index')
+            ->with('success', 'Акция «' . $title . '» удалена');
     }
 }
