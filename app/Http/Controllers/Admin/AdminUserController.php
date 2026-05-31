@@ -13,7 +13,6 @@ class AdminUserController extends Controller
     {
         $query = AdminUser::query();
 
-        // ПОИСК
         if ($request->search) {
             $query->where(function ($q) use ($request) {
                 $q->where('name', 'like', '%' . $request->search . '%')
@@ -21,17 +20,28 @@ class AdminUserController extends Controller
             });
         }
 
-        $users = $query->get();
+        if ($request->status) {
+            $query->where('status', $request->status);
+        }
 
-        return view('admin.users.index', compact('users'));
+        $users = $query->latest()->paginate(20);
+
+        $stats = [
+            'total'  => AdminUser::count(),
+            'active' => AdminUser::where('status', 'active')->count(),
+            'banned' => AdminUser::where('status', 'banned')->count(),
+        ];
+
+        return view('admin.users.index', compact('users', 'stats'));
     }
 
     public function updateStatus(AdminUserStatusRequest $request, AdminUser $adminUser)
     {
-        $adminUser->update([
-            'status' => $request->status,
-        ]);
+        $adminUser->update(['status' => $request->status]);
 
-        return redirect()->back();
+        $action = $request->status === 'banned' ? 'забанен' : 'разбанен';
+
+        return redirect()->back()
+            ->with('success', 'Пользователь «' . $adminUser->name . '» ' . $action);
     }
 }
