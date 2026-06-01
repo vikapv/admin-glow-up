@@ -250,10 +250,15 @@
     </main>
 
     <!-- Footer -->
-    <footer class="app-footer">
-        <strong>&copy; {{ date('Y') }}&nbsp;<span class="text-decoration-none">Glow-Up</span>.</strong>
-        Все права защищены.
-    </footer>
+        <footer class="app-footer">
+            <strong>
+                &copy; {{ date('Y') }}
+                <a href="http://127.0.0.1:5173/" class="text-decoration-none" target="_blank">
+                    Glow-Up
+                </a>.
+            </strong>
+            Все права защищены.
+        </footer>
 
 </div>
 
