@@ -8,13 +8,18 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('admin_users', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->string('status')->default('active'); // active | banned
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('admin_users')) {
+            Schema::create('admin_users', function (Blueprint $table) {
+                $table->id();
+                $table->string('name');
+                $table->string('email')->unique();
+                $table->string('phone')->nullable();
+                $table->string('password');
+                $table->string('status')->default('active');
+                $table->rememberToken();
+                $table->timestamps();
+            });
+        }
     }
 
     public function down(): void
