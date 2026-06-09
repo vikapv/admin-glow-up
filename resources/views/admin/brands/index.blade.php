@@ -73,7 +73,7 @@
                         {{-- Лого --}}
                         <div class="mb-3">
                             @if($brand->logo)
-                                <img src="{{ asset($brand->logo) }}"
+                                <img src="http://127.0.0.1:8001/storage/{{ $brand->logo }}"
                                      style="width:90px;height:90px;object-fit:cover;
                                             border-radius:14px;">
                             @else
