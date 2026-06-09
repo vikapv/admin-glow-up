@@ -14,35 +14,31 @@ class AuthController extends Controller
         return view('admin.login');
     }
 
-    // Логиним пользователя
     public function login(Request $request)
-    {
-        // Валидируем email и пароль
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|string',
-        ]);
+{
+    $request->validate([
+        'email'    => 'required|email',
+        'password' => 'required|string',
+    ]);
 
-        $credentials = $request->only('email', 'password');
-
-        // Пытаемся авторизовать
-        if (Auth::attempt($credentials, $request->filled('remember'))) {
-            $request->session()->regenerate(); // важно для безопасности
-            return redirect()->intended('/admin/dashboard'); // редирект на админку
-        }
-
-        // Если данные неверны — возвращаем ошибку
-        return back()->withErrors([
-            'login_error' => 'Неверный email или пароль',
-        ])->withInput($request->only('email'));
+    if (Auth::guard('admin')->attempt(
+        $request->only('email', 'password'),
+        $request->filled('remember')
+    )) {
+        $request->session()->regenerate();
+        return redirect()->intended('/admin/dashboard');
     }
 
-    // Выход
-    public function logout(Request $request)
-    {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-        return redirect()->route('admin.login');
-    }
+    return back()->withErrors([
+        'login_error' => 'Неверный email или пароль',
+    ])->withInput($request->only('email'));
+}
+
+public function logout(Request $request)
+{
+    Auth::guard('admin')->logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+    return redirect()->route('admin.login');
+}
 }

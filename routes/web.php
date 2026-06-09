@@ -28,7 +28,7 @@ Route::get('/logout', [AuthController::class, 'logout'])->name('admin.logout');
 | ЗАЩИЩЁННЫЕ МАРШРУТЫ — только для авторизованных
 |--------------------------------------------------------------------------
 */
-Route::prefix('admin')->middleware('auth')->group(function () {
+Route::prefix('admin')->middleware('auth:admin')->group(function () {
 
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])
@@ -90,7 +90,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get('/users', [AdminUserController::class, 'index'])
         ->name('admin.users.index');
 
-    Route::post('/users/{adminUser}/status', [AdminUserController::class, 'updateStatus'])
+      Route::post('/users/{user}/status', [AdminUserController::class, 'updateStatus'])
         ->name('admin.users.status');
 
     /*

@@ -3,15 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\AdminUserStatusRequest;
-use App\Models\AdminUser;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class AdminUserController extends Controller
 {
     public function index(Request $request)
     {
-        $query = AdminUser::query();
+        $query = User::query();
 
         if ($request->search) {
             $query->where(function ($q) use ($request) {
@@ -27,21 +26,25 @@ class AdminUserController extends Controller
         $users = $query->latest()->paginate(20);
 
         $stats = [
-            'total'  => AdminUser::count(),
-            'active' => AdminUser::where('status', 'active')->count(),
-            'banned' => AdminUser::where('status', 'banned')->count(),
+            'total'  => User::count(),
+            'active' => User::where('status', 'active')->count(),
+            'banned' => User::where('status', 'banned')->count(),
         ];
 
         return view('admin.users.index', compact('users', 'stats'));
     }
 
-    public function updateStatus(AdminUserStatusRequest $request, AdminUser $adminUser)
+    public function updateStatus(Request $request, User $user)
     {
-        $adminUser->update(['status' => $request->status]);
+        $request->validate([
+            'status' => 'required|in:active,banned',
+        ]);
+
+        $user->update(['status' => $request->status]);
 
         $action = $request->status === 'banned' ? 'забанен' : 'разбанен';
 
         return redirect()->back()
-            ->with('success', 'Пользователь «' . $adminUser->name . '» ' . $action);
+            ->with('success', 'Пользователь «' . $user->name . '» ' . $action);
     }
 }
