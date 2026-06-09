@@ -123,7 +123,7 @@
                         {{-- Лого + инициалы если нет лого --}}
                         <div class="text-center mb-3">
                             @if($partner->logo)
-                                <img src="{{ asset($partner->logo) }}"
+                                <img src="http://127.0.0.1:8001/storage/{{ $partner->logo }}"
                                      style="width:80px;height:80px;object-fit:cover;
                                             border-radius:12px;">
                             @else

@@ -33,7 +33,7 @@
             <div class="card border-0 shadow-sm mb-3 text-center">
                 <div class="card-body py-4">
                     @if($partner->logo)
-                        <img src="{{ asset($partner->logo) }}"
+                        <img src="http://127.0.0.1:8001/storage/{{ $partner->logo }}"
                              style="width:140px;height:140px;object-fit:cover;
                                     border-radius:16px;margin-bottom:16px;">
                     @else

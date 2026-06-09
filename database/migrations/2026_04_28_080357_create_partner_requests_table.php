@@ -11,15 +11,17 @@ return new class extends Migration
      */
    public function up(): void
 {
-    Schema::create('partner_requests', function (Blueprint $table) {
-        $table->id();
-        $table->string('name');
-        $table->string('logo')->nullable();
-        $table->text('description')->nullable();
-        $table->string('email');
-        $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
-        $table->timestamps();
-    });
+    if (!Schema::hasTable('partner_requests')) {
+        Schema::create('partner_requests', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('logo')->nullable();
+            $table->text('description')->nullable();
+            $table->string('email');
+            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->timestamps();
+        });
+    }
 }
 
     /**
