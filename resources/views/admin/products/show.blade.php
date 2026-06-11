@@ -44,7 +44,7 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-body p-0">
                     @if($product->image)
-                        <img src="{{ asset('storage/' . $product->image) }}"
+                        <img src="http://127.0.0.1:8001/storage/{{ $product->image }}"
                              class="card-img-top"
                              style="border-radius:12px;object-fit:cover;
                                     max-height:320px;width:100%;">

@@ -141,7 +141,7 @@
                     {{-- Картинка --}}
                     <div class="position-relative">
                         @if($product->image)
-                            <img src="{{ asset('storage/' . $product->image) }}"
+                            <img src="http://127.0.0.1:8001/storage/{{ $product->image }}"
                                  class="card-img-top"
                                  style="height:180px;object-fit:cover;">
                         @else
