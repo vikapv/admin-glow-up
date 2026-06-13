@@ -74,6 +74,21 @@
                             @enderror
                         </div>
 
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Категория</label>
+
+                            <select name="category" class="form-select">
+                                @foreach($categories as $category)
+                                    <option
+                                        value="{{ $category->name }}"
+                                        {{ $promotion->category == $category->name ? 'selected' : '' }}
+                                    >
+                                        {{ $category->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
                         {{-- Превью текущей акции --}}
                         <div class="alert alert-light border mb-4 py-2">
                             <small class="text-muted d-block mb-1">Текущие данные</small>

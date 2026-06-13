@@ -13,5 +13,6 @@ class Promotion extends Model
         'title',
         'description',
         'discount',
+        'category',
     ];
 }

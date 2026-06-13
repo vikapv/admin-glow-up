@@ -76,6 +76,18 @@
                             <div class="form-text">От 1 до 100%</div>
                         </div>
 
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Категория</label>
+
+                            <select name="category" class="form-select">
+                                @foreach($categories as $category)
+                                    <option value="{{ $category->name }}">
+                                        {{ $category->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
                         <div class="d-flex gap-2">
                             <button class="btn btn-primary px-4">
                                 <i class="bi bi-plus-circle me-1"></i> Создать акцию

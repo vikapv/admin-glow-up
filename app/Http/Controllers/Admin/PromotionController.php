@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Promotion;
 use App\Http\Requests\PromotionRequest;
+use App\Models\Category;
 
 class PromotionController extends Controller
 {
@@ -23,7 +24,9 @@ class PromotionController extends Controller
 
     public function create()
     {
-        return view('admin.promotions.create');
+        $categories = Category::all();
+
+        return view('admin.promotions.create', compact('categories'));
     }
 
     public function store(PromotionRequest $request)
@@ -36,7 +39,12 @@ class PromotionController extends Controller
 
     public function edit(Promotion $promotion)
     {
-        return view('admin.promotions.edit', compact('promotion'));
+        $categories = Category::all();
+
+        return view('admin.promotions.edit', compact(
+            'promotion',
+            'categories'
+        ));
     }
 
     public function update(PromotionRequest $request, Promotion $promotion)
