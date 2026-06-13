@@ -152,7 +152,7 @@
                     <div class="d-flex align-items-center justify-content-between mb-3">
                         <div class="d-flex align-items-center gap-2">
                             @if($partner->logo)
-                                <img src="{{ asset($partner->logo) }}"
+                                <img src="http://127.0.0.1:8001/storage/{{ $partner->logo }}"
                                      style="width:38px;height:38px;object-fit:cover;border-radius:8px;">
                             @else
                                 <div style="width:38px;height:38px;background:#f1f1f1;
