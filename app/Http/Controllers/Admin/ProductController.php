@@ -43,16 +43,20 @@ class ProductController extends Controller
         $products = $query->paginate(12);
 
         $stats = [
-            'total'          => Product::whereIn('brand', $brandNames)->count(),
-            'with_discount'  => Product::whereIn('brand', $brandNames)
-                                    ->whereNotNull('discount')
-                                    ->where('discount', '!=', '')
-                                    ->count(),
-            'avg_price'      => round(Product::whereIn('brand', $brandNames)->avg('price')),
-            'total_reviews'  => Product::whereIn('brand', $brandNames)
-                                    ->withCount('reviews')
-                                    ->get()
-                                    ->sum('reviews_count'),
+            'total' => Product::whereIn('brand', $brandNames)->count(),
+
+            'with_discount' => Product::whereIn('brand', $brandNames)
+                ->where('discount_active', 1)
+                ->count(),
+
+            'avg_price' => round(
+                Product::whereIn('brand', $brandNames)->avg('price')
+            ),
+
+            'total_reviews' => Product::whereIn('brand', $brandNames)
+                ->withCount('reviews')
+                ->get()
+                ->sum('reviews_count'),
         ];
 
         return view('admin.products.index', compact(

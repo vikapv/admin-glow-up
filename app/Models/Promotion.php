@@ -12,7 +12,10 @@ class Promotion extends Model
     protected $fillable = [
         'title',
         'description',
-        'discount',
+        'discount_percent',
+        'discount_active',
         'category',
+        'discount_start',
+        'discount_end',
     ];
 }

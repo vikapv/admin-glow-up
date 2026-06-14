@@ -14,7 +14,7 @@ class PromotionController extends Controller
         $promotions = Promotion::latest()->paginate(10);
 
         $stats = [
-            'total'        => Promotion::count(),
+            'total' => Promotion::count(),
             'max_discount' => Promotion::max('discount') ?? 0,
             'avg_discount' => round(Promotion::avg('discount') ?? 0),
         ];
