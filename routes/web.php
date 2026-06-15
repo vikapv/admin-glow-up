@@ -152,17 +152,17 @@ Route::prefix('admin')->middleware('auth:admin')->group(function () {
     Route::get('/partners', [PartnerRequestController::class, 'index'])
         ->name('admin.partners.index');
 
-    Route::get('/partners/{partner}', [PartnerRequestController::class, 'show'])
-        ->name('admin.partners.show');
+    Route::get('/partners/{id}', [PartnerRequestController::class, 'show'])
+    ->name('admin.partners.show');
 
-    Route::post('/partners/{partner}/approve', [PartnerRequestController::class, 'approve'])
-        ->name('admin.partners.approve');
+    Route::post('/partners/{id}/approve', [PartnerRequestController::class, 'approve'])
+    ->name('admin.partners.approve');
 
-    Route::post('/partners/{partner}/reject', [PartnerRequestController::class, 'reject'])
-        ->name('admin.partners.reject');
+    Route::post('/partners/{id}/reject', [PartnerRequestController::class, 'reject'])
+    ->name('admin.partners.reject');
 
-    Route::post('/partners/{partner}/delete', [PartnerRequestController::class, 'destroy'])
-        ->name('admin.partners.delete');
+    Route::post('/partners/{id}/delete', [PartnerRequestController::class, 'destroy'])
+    ->name('admin.partners.delete');
 
     /*
     |----------------------------------------------------------------------

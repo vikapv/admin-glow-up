@@ -1,78 +1,92 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\PartnerRequest;
-use App\Models\Brand;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class PartnerRequestController extends Controller
 {
+    private string $api = 'http://127.0.0.1:8001/api';
+
     public function index(Request $request)
     {
-        $query = PartnerRequest::query();
+        $response = Http::get("{$this->api}/partners", [
+            'search' => $request->search,
+            'status' => $request->status,
+        ]);
 
-        if ($request->status) {
-            $query->where('status', $request->status);
-        }
+        $json = $response->json();
 
-        if ($request->search) {
-            $query->where(function($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->search . '%')
-                  ->orWhere('email', 'like', '%' . $request->search . '%');
-            });
-        }
+        $allPartners = collect($json['partners'] ?? [])
+            ->map(fn($p) => (object)$p);
 
-        $requests = $query->latest()->paginate(12);
-
-        $stats = [
-            'total'    => PartnerRequest::count(),
-            'pending'  => PartnerRequest::where('status', 'pending')->count(),
-            'approved' => PartnerRequest::where('status', 'approved')->count(),
-            'rejected' => PartnerRequest::where('status', 'rejected')->count(),
+        $stats = $json['stats'] ?? [
+            'total'    => 0,
+            'pending'  => 0,
+            'approved' => 0,
+            'rejected' => 0,
         ];
 
-        return view('admin.partners.index', compact('requests', 'stats'));
-    }
-
-    public function show(PartnerRequest $partner)
-    {
-        return view('admin.partners.show', compact('partner'));
-    }
-
-    public function approve(PartnerRequest $partner)
-    {
-        $partner->update(['status' => 'approved']);
-
-        Brand::updateOrCreate(
-            ['partner_request_id' => $partner->id],
-            [
-                'name' => $partner->name,
-                'logo' => $partner->logo,
-            ]
+        // Пагинация
+        $perPage     = 12;
+        $currentPage = (int)($request->page ?? 1);
+        $paginated   = new LengthAwarePaginator(
+            $allPartners->values()->slice(($currentPage - 1) * $perPage, $perPage)->values(),
+            $allPartners->count(),
+            $perPage,
+            $currentPage,
+            ['path' => $request->url(), 'query' => $request->query()]
         );
 
-        return redirect()->route('admin.partners.index')
-            ->with('success', 'Партнёр «' . $partner->name . '» принят и добавлен в бренды');
+        return view('admin.partners.index', [
+            'requests' => $paginated,
+            'stats'    => $stats,
+        ]);
     }
 
-    public function reject(PartnerRequest $partner)
+    public function approve($id)
     {
-        $partner->update(['status' => 'rejected']);
+        $response = Http::post("{$this->api}/partners/{$id}/approve");
 
-        Brand::where('partner_request_id', $partner->id)->delete();
+        if ($response->successful()) {
+            return redirect()->route('admin.partners.index')
+                ->with('success', 'Партнёр принят');
+        }
 
-        return redirect()->route('admin.partners.index')
-            ->with('success', 'Заявка «' . $partner->name . '» отклонена');
+        return redirect()->back()->with('error', 'Ошибка при принятии');
     }
 
-    public function destroy(PartnerRequest $partner)
+    public function reject($id)
     {
-        Brand::where('partner_request_id', $partner->id)->delete();
-        $partner->delete();
+        $response = Http::post("{$this->api}/partners/{$id}/reject");
 
-        return redirect()->route('admin.partners.index')
-            ->with('success', 'Заявка удалена');
+        if ($response->successful()) {
+            return redirect()->route('admin.partners.index')
+                ->with('success', 'Заявка отклонена');
+        }
+
+        return redirect()->back()->with('error', 'Ошибка при отклонении');
+    }
+
+    public function destroy($id)
+    {
+        $response = Http::delete("{$this->api}/partners/{$id}");
+
+        if ($response->successful()) {
+            return redirect()->route('admin.partners.index')
+                ->with('success', 'Заявка удалена');
+        }
+
+        return redirect()->back()->with('error', 'Ошибка при удалении');
+    }
+
+    public function show($id)
+    {
+        $response = Http::get("{$this->api}/partners/{$id}");
+        $partner  = (object)($response->json() ?? []);
+
+        return view('admin.partners.show', compact('partner'));
     }
 }

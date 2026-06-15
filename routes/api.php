@@ -21,7 +21,6 @@ Route::post('/products', [ProductApiController::class, 'store']);
 Route::get('/user', [ProfileApiController::class, 'user']);
 Route::post('/user/update', [ProfileApiController::class, 'updateUser']);
 
-Route::get('/orders', [ProfileApiController::class, 'orders']);
 
 Route::get('/addresses', [ProfileApiController::class, 'addresses']);
 Route::post('/addresses', [ProfileApiController::class, 'addAddress']);
@@ -29,14 +28,11 @@ Route::delete('/addresses/{id}', [ProfileApiController::class, 'deleteAddress'])
 
 Route::get('/bonuses', [ProfileApiController::class, 'bonuses']);
 
-/*
-|--------------------------------------------------------------------------
-| Корзина (работает без аутентификации, для теста user_id = 1)
-|--------------------------------------------------------------------------
-*/
 Route::middleware('auth:sanctum')->group(function() {
     Route::get('/cart', [CartApiController::class, 'index']);
     Route::post('/cart/add', [CartApiController::class, 'add']);
     Route::post('/cart/update/{id}', [CartApiController::class, 'update']);
     Route::delete('/cart/remove/{id}', [CartApiController::class, 'remove']);
+    
+    Route::get('/orders', [ProfileApiController::class, 'orders']);
 });

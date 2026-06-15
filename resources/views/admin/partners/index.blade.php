@@ -122,7 +122,7 @@
 
                         {{-- Лого + инициалы если нет лого --}}
                         <div class="text-center mb-3">
-                            @if($partner->logo)
+                            @if(!empty($partner->logo))
                                 <img src="http://127.0.0.1:8001/storage/{{ $partner->logo }}"
                                      style="width:80px;height:80px;object-fit:cover;
                                             border-radius:12px;">
@@ -158,14 +158,14 @@
 
                         {{-- Дата подачи --}}
                         <p class="text-center text-muted mb-3" style="font-size:11px;">
-                            Подано: {{ $partner->created_at->format('d.m.Y') }}
+                            Подано: {{ \Carbon\Carbon::parse($partner->created_at)->format('d.m.Y') }}
                         </p>
 
                         {{-- Быстрые действия для pending --}}
                         @if($partner->status == 'pending')
                             <div class="row g-1 mb-2">
                                 <div class="col-6">
-                                    <form action="{{ route('admin.partners.approve', $partner) }}"
+                                    <form action="{{ route('admin.partners.approve', $partner->id) }}"
                                           method="POST">
                                         @csrf
                                         <button class="btn btn-success btn-sm w-100">
@@ -174,7 +174,7 @@
                                     </form>
                                 </div>
                                 <div class="col-6">
-                                    <form action="{{ route('admin.partners.reject', $partner) }}"
+                                    <form action="{{ route('admin.partners.reject', $partner->id) }}"
                                           method="POST">
                                         @csrf
                                         <button class="btn btn-warning btn-sm w-100 text-dark">
@@ -186,14 +186,15 @@
                         @endif
 
                         <div class="mt-auto d-grid gap-2">
-                            <a href="{{ route('admin.partners.show', $partner) }}"
+                            <a href="{{ route('admin.partners.show', $partner->id) }}"
                                class="btn btn-outline-primary btn-sm">
                                 Подробнее →
                             </a>
-                            <form action="{{ route('admin.partners.delete', $partner) }}"
+                            <form action="{{ route('admin.partners.delete', $partner->id) }}"
                                   method="POST"
                                   onsubmit="return confirm('Удалить заявку «{{ $partner->name }}»?')">
                                 @csrf
+                                @method('DELETE')
                                 <button class="btn btn-outline-danger btn-sm w-100">
                                     <i class="bi bi-trash"></i> Удалить
                                 </button>
@@ -213,13 +214,13 @@
     </div>
 
     {{-- ПАГИНАЦИЯ --}}
-    @if($requests->hasPages())
+    @if($requests->total() > 12)
         <div class="d-flex justify-content-between align-items-center mt-4">
             <small class="text-muted">
                 Показано {{ $requests->firstItem() }}–{{ $requests->lastItem() }}
                 из {{ $requests->total() }}
             </small>
-            {{ $requests->withQueryString()->links() }}
+            {{ $requests->withQueryString()->links('pagination::bootstrap-5') }}
         </div>
     @endif
 

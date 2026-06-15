@@ -103,10 +103,6 @@
                             {{ request('sort') == 'price_desc' ? 'selected' : '' }}>
                             Цена ↓
                         </option>
-                        <option value="reviews"
-                            {{ request('sort') == 'reviews' ? 'selected' : '' }}>
-                            По отзывам
-                        </option>
                     </select>
                 </div>
 
@@ -140,7 +136,7 @@
 
                     {{-- Картинка --}}
                     <div class="position-relative">
-                        @if($product->image)
+                        @if(!empty($product->image))
                             <img src="http://127.0.0.1:8001/storage/{{ $product->image }}"
                                  class="card-img-top"
                                  style="height:180px;object-fit:cover;">
@@ -157,7 +153,7 @@
                         @endif
 
                         {{-- Бейдж скидки --}}
-                        @if($product->discount)
+                        @if(!empty($product->discount) && $product->discount > 0)
                             <span class="badge bg-danger position-absolute"
                                   style="top:8px;left:8px;font-size:12px;">
                                 -{{ $product->discount }}%
@@ -165,7 +161,7 @@
                         @endif
 
                         {{-- Бейдж отзывов --}}
-                        @if($product->reviews_count > 0)
+                        @if(!empty($product->reviews_count) && $product->reviews_count > 0)
                             <span class="badge bg-dark bg-opacity-50 position-absolute"
                                   style="top:8px;right:8px;font-size:11px;">
                                 <i class="bi bi-chat-left-text"></i>
@@ -194,12 +190,9 @@
                         <div class="mt-auto">
                             {{-- Цена --}}
                             <div class="d-flex align-items-baseline gap-2 mb-3">
-                                @if($product->discount)
+                                @if(!empty($product->discount) && $product->discount > 0)
                                     <span class="fw-bold fs-6">
-                                        {{ number_format(
-                                            $product->price * (1 - $product->discount / 100),
-                                            0, '.', ' '
-                                        ) }} ₸
+                                        {{ number_format($product->final_price, 0, '.', ' ') }} ₸
                                     </span>
                                     <span class="text-muted small text-decoration-line-through">
                                         {{ number_format($product->price, 0, '.', ' ') }} ₸
@@ -213,11 +206,11 @@
 
                             {{-- Кнопки --}}
                             <div class="d-flex gap-2">
-                                <a href="{{ route('admin.products.show', $product) }}"
+                                <a href="{{ route('admin.products.show', $product->id) }}"
                                    class="btn btn-outline-primary btn-sm flex-grow-1">
                                     Детали
                                 </a>
-                                <form action="{{ route('admin.products.delete', $product) }}"
+                                <form action="{{ route('admin.products.delete', $product->id) }}"
                                       method="POST"
                                       onsubmit="return confirm('Удалить «{{ $product->title }}»?')">
                                     @csrf
@@ -240,16 +233,17 @@
         @endforelse
     </div>
 
-    {{-- ПАГИНАЦИЯ --}}
-    @if($products->hasPages())
-        <div class="d-flex justify-content-between align-items-center mt-4">
-            <small class="text-muted">
-                Показано {{ $products->firstItem() }}–{{ $products->lastItem() }}
-                из {{ $products->total() }}
-            </small>
-            {{ $products->withQueryString()->links() }}
-        </div>
-    @endif
+    
+  {{-- ПАГИНАЦИЯ --}}
+@if($products->total() > 12)
+    <div class="d-flex justify-content-between align-items-center mt-4">
+        <small class="text-muted">
+            Показано {{ $products->firstItem() }}–{{ $products->lastItem() }}
+            из {{ $products->total() }}
+        </small>
+        {{ $products->withQueryString()->links('pagination::bootstrap-5') }}
+    </div>
+@endif
 
 </div>
 </div>
