@@ -243,9 +243,8 @@
                                 {{ round($item['average_price']) }} ₸
                             </td>
                             <td class="text-center">
-                                <a href="{{ route('admin.brands.show', 
-                                    \App\Models\Brand::where('name', $item['brand'])->first()) }}"
-                                   class="btn btn-sm btn-outline-secondary">
+                                <a href="{{ route('admin.brands.show', $item['id']) }}"
+                                class="btn btn-sm btn-outline-secondary">
                                     Подробнее
                                 </a>
                             </td>

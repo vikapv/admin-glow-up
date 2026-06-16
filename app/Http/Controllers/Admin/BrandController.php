@@ -1,56 +1,56 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Brand;
-use App\Models\Product;
-use App\Models\OrderItem;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class BrandController extends Controller
 {
+    private string $api = 'http://127.0.0.1:8001/api';
+
     public function index(Request $request)
     {
-        $query = Brand::withCount('partner')
-            ->with('partner');
+        $response = Http::get("{$this->api}/brands");
+        $json     = $response->json();
+
+        $allBrands = collect($json['brands'] ?? [])
+            ->map(fn($b) => (object)$b);
 
         if ($request->search) {
-            $query->where('name', 'like', '%' . $request->search . '%');
+            $allBrands = $allBrands->filter(fn($b) =>
+                str_contains(mb_strtolower($b->name), mb_strtolower($request->search))
+            );
         }
 
-        $brands = $query->latest()->paginate(12);
+        $stats = $json['stats'] ?? ['total' => 0, 'with_logo' => 0];
 
-        $stats = [
-            'total'    => Brand::count(),
-            'with_logo' => Brand::whereNotNull('logo')->count(),
-        ];
+        $perPage     = 12;
+        $currentPage = (int)($request->page ?? 1);
+        $paginated   = new LengthAwarePaginator(
+            $allBrands->values()->slice(($currentPage - 1) * $perPage, $perPage)->values(),
+            $allBrands->count(),
+            $perPage,
+            $currentPage,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
 
-        return view('admin.brands.index', compact('brands', 'stats'));
+        return view('admin.brands.index', [
+            'brands' => $paginated,
+            'stats'  => $stats,
+        ]);
     }
 
-    public function show(Brand $brand)
-    {
-        $brand->load('partner');
+    public function show($id)
+        {
+            $response = Http::get("{$this->api}/brands/{$id}");
+            $json     = $response->json();
 
-        // статистика бренда
-        $brandStats = [
-            'products_count' => Product::where('brand', $brand->name)->count(),
-            'orders_count'   => OrderItem::where('brand', $brand->name)
-                                    ->distinct('order_id')->count('order_id'),
-            'total_sum'      => OrderItem::where('brand', $brand->name)
-                                    ->sum(DB::raw('price * quantity')),
-            'avg_price'      => round(Product::where('brand', $brand->name)->avg('price')),
-        ];
+            $brand      = (object)($json['brand'] ?? []);
+            $brandStats = $json['stats'] ?? ['products_count' => 0, 'orders_count' => 0, 'total_sum' => 0, 'avg_price' => 0];
+            $products   = collect($json['products'] ?? [])->map(fn($p) => (object)$p);
 
-        // последние товары бренда
-        $products = Product::where('brand', $brand->name)
-            ->withCount('reviews')
-            ->latest()
-            ->take(6)
-            ->get();
-
-        return view('admin.brands.show', compact('brand', 'brandStats', 'products'));
-    }
+            return view('admin.brands.show', compact('brand', 'brandStats', 'products'));
+        }
 }

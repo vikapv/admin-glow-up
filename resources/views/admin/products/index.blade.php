@@ -235,15 +235,15 @@
 
     
   {{-- ПАГИНАЦИЯ --}}
-@if($products->total() > 12)
-    <div class="d-flex justify-content-between align-items-center mt-4">
-        <small class="text-muted">
-            Показано {{ $products->firstItem() }}–{{ $products->lastItem() }}
-            из {{ $products->total() }}
-        </small>
-        {{ $products->withQueryString()->links('pagination::bootstrap-5') }}
-    </div>
-@endif
+    @if($products->total() > 12)
+        <div class="d-flex justify-content-between align-items-center mt-4">
+            <small class="text-muted">
+                Показано {{ $products->firstItem() }}–{{ $products->lastItem() }}
+                из {{ $products->total() }}
+            </small>
+            {{ $products->withQueryString()->links('pagination::bootstrap-5') }}
+        </div>
+    @endif
 
 </div>
 </div>

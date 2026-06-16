@@ -13,14 +13,15 @@ class PartnerRequestController extends Controller
     public function index(Request $request)
     {
         $response = Http::get("{$this->api}/partners", [
-            'search' => $request->search,
-            'status' => $request->status,
-        ]);
+        'search' => $request->search,
+        'status' => $request->status ?? 'pending', // по умолчанию pending
+    ]);
 
-        $json = $response->json();
+    $json = $response->json();
 
-        $allPartners = collect($json['partners'] ?? [])
-            ->map(fn($p) => (object)$p);
+    $allPartners = collect($json['partners'] ?? [])
+        ->map(fn($p) => (object)$p)
+        ->filter(fn($p) => $p->status !== 'approved');
 
         $stats = $json['stats'] ?? [
             'total'    => 0,
@@ -47,16 +48,16 @@ class PartnerRequestController extends Controller
     }
 
     public function approve($id)
-    {
-        $response = Http::post("{$this->api}/partners/{$id}/approve");
+        {
+            $response = Http::post("{$this->api}/partners/{$id}/approve");
 
-        if ($response->successful()) {
-            return redirect()->route('admin.partners.index')
-                ->with('success', 'Партнёр принят');
+            if ($response->successful()) {
+                return redirect()->route('admin.brands.index')
+                    ->with('success', 'Партнёр принят и добавлен в бренды');
+            }
+
+            return redirect()->back()->with('error', 'Ошибка при принятии');
         }
-
-        return redirect()->back()->with('error', 'Ошибка при принятии');
-    }
 
     public function reject($id)
     {

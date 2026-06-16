@@ -90,22 +90,24 @@
                         <h6 class="fw-bold mb-1">{{ $brand->name }}</h6>
 
                         {{-- Партнёр --}}
-                        @if($brand->partner)
+                        @if(!empty($brand->email))
                             <p class="text-muted mb-2" style="font-size:12px;">
                                 <i class="bi bi-person-check me-1"></i>
-                                {{ $brand->partner->email }}
+                                {{ $brand->email }}
                             </p>
                         @endif
+                        
+                        {{-- Статус --}}
 
                         <span class="badge bg-success mb-3">Активный бренд</span>
 
                         {{-- Дата --}}
                         <p class="text-muted mb-3" style="font-size:11px;">
-                            Добавлен: {{ $brand->created_at->format('d.m.Y') }}
+                            Добавлен: {{ \Carbon\Carbon::parse($brand->created_at)->format('d.m.Y') }}
                         </p>
 
                         <div class="mt-auto w-100">
-                            <a href="{{ route('admin.brands.show', $brand) }}"
+                            <a href="{{ route('admin.brands.show', $brand->id) }}"
                                class="btn btn-outline-primary btn-sm w-100">
                                 Подробнее →
                             </a>
