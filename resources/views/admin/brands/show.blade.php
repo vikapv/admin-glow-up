@@ -42,7 +42,8 @@
                 </div>
             </div>
 
-            @if($brand->partner)
+
+            @if(!empty($brand->email))
                 <div class="card border-0 shadow-sm mb-3">
                     <div class="card-header bg-transparent border-0 pt-3">
                         <h6 class="fw-bold mb-0">Партнёр</h6>
@@ -51,14 +52,14 @@
                         <table class="table table-sm mb-0">
                             <tr>
                                 <td class="text-muted">Название</td>
-                                <td class="fw-bold">{{ $brand->partner->name }}</td>
+                                <td class="fw-bold">{{ $brand->name }}</td>
                             </tr>
                             <tr>
                                 <td class="text-muted">Email</td>
                                 <td>
-                                    <a href="mailto:{{ $brand->partner->email }}"
-                                       class="text-decoration-none small">
-                                        {{ $brand->partner->email }}
+                                    <a href="mailto:{{ $brand->email }}"
+                                    class="text-decoration-none small">
+                                        {{ $brand->email }}
                                     </a>
                                 </td>
                             </tr>
@@ -68,7 +69,7 @@
                             </tr>
                         </table>
                         <div class="mt-3">
-                            <a href="{{ route('admin.partners.show', $brand->partner->id) }}"
+                            <a href="{{ route('admin.partners.show', $brand->id) }}"
                                class="btn btn-sm btn-outline-primary w-100">
                                 Открыть заявку →
                             </a>
@@ -155,7 +156,7 @@
                 </div>
                 <div class="card-body p-0">
 
-                    @if($products->isEmpty())
+                    @if(count($products) === 0)
                         <div class="text-center text-muted py-4">
                             <i class="bi bi-box-seam fs-2 d-block mb-2 opacity-25"></i>
                             <p class="mb-0">Товаров пока нет</p>
@@ -178,9 +179,10 @@
                                         <tr>
                                             <td class="ps-3">
                                                 @if($product->image)
-    <img src="http://127.0.0.1:8001/storage/{{ $product->image }}"
-         style="width:40px;height:40px;
-                object-fit:cover;border-radius:8px;">
+                                                    <img src="http://127.0.0.1:8001/storage/{{ $product->image }}"
+                                                         style="width:40px;height:40px;
+                                                                object-fit:cover;
+                                                                border-radius:8px;">
                                                 @else
                                                     <div style="width:40px;height:40px;
                                                                 background:#f5f5f5;border-radius:8px;
@@ -193,7 +195,7 @@
                                             </td>
                                             <td class="fw-bold" style="font-size:14px;">
                                                 {{ $product->title }}
-                                                @if($product->discount)
+                                                @if(!empty($product->discount) && $product->discount > 0)
                                                     <span class="badge bg-danger ms-1"
                                                           style="font-size:10px;">
                                                         -{{ $product->discount }}%
@@ -210,7 +212,7 @@
                                                 {{ number_format($product->price, 0, '.', ' ') }} ₸
                                             </td>
                                             <td class="text-center">
-                                                @if($product->reviews_count > 0)
+                                                @if(!empty($product->reviews_count) && $product->reviews_count > 0)
                                                     <span class="badge bg-secondary">
                                                         {{ $product->reviews_count }}
                                                     </span>
@@ -220,7 +222,9 @@
                                             </td>
                                             <td>
                                                 <a href="{{ route('admin.products.show', $product->id) }}"
-                                                   class="btn btn-sm btn-outline-secondary">→</a>
+                                                   class="btn btn-sm btn-outline-secondary">
+                                                    →
+                                                </a>
                                             </td>
                                         </tr>
                                     @endforeach

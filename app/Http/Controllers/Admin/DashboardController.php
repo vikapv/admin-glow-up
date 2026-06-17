@@ -3,53 +3,88 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Brand;
-use App\Models\Product;
-use App\Models\OrderItem;
-use App\Models\Order;
-use App\Models\PartnerRequest;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use App\Models\User;
+use Illuminate\Support\Facades\Http;
 
 class DashboardController extends Controller
 {
+    private string $apiBase = 'http://127.0.0.1:8001/api';
+
     public function index(Request $request)
     {
-        // Глобальные метрики
+        $partnersResponse = Http::get("{$this->apiBase}/partners")->json();
+        $partnerReqs      = Http::get("{$this->apiBase}/admin/partner-requests")->json() ?? [];
+        $products         = Http::get("{$this->apiBase}/products")->json() ?? [];
+        $orders           = Http::get("{$this->apiBase}/orders")->json() ?? [];
+
+        $partnersList    = $partnersResponse['partners'] ?? [];
+        $partnerReqsList = $partnerReqs['data'] ?? $partnerReqs;
+        $productsList    = $products['data'] ?? $products;
+        $ordersList      = $orders['data'] ?? $orders;
+
         $globalStats = [
-            'total_orders'     => Order::count(),
-            'total_revenue'    => OrderItem::sum(DB::raw('price * quantity')),
-            'total_users' => User::where('status', 'active')->count(),
-            'pending_partners' => PartnerRequest::where('status', 'pending')->count(),
+            'total_orders'     => count($ordersList),
+            'total_revenue'    => collect($ordersList)->sum('total_price'),
+            'total_users'      => 0,
+            'pending_partners' => collect($partnerReqsList)
+                ->where('status', 'pending')
+                ->count(),
         ];
 
-        // Последние 5 заказов
-        $recentOrders = Order::with('items')->latest()->take(5)->get();
+        $recentOrders = collect($ordersList)
+            ->sortByDesc('created_at')
+            ->take(5)
+            ->values();
 
-        // Ожидающие заявки партнёров
-        $pendingPartners = PartnerRequest::where('status', 'pending')
-            ->latest()->take(5)->get();
+        $pendingPartners = collect($partnerReqsList)
+            ->where('status', 'pending')
+            ->sortByDesc('created_at')
+            ->take(5)
+            ->values();
 
-        // Аналитика по брендам (с поиском)
-        $query = Brand::query();
-        if ($request->search) {
-            $query->where('name', 'like', '%' . $request->search . '%');
+        $search = $request->input('search');
+
+        if ($search) {
+            $partnersList = array_filter($partnersList, fn ($p) =>
+                str_contains(
+                    strtolower($p['name'] ?? ''),
+                    strtolower($search)
+                )
+            );
         }
-        $brands = $query->get();
 
         $data = [];
-        foreach ($brands as $brand) {
-            $productsQuery   = Product::where('brand', $brand->name);
-            $orderItemsQuery = OrderItem::where('brand', $brand->name);
+
+        foreach ($partnersList as $partner) {
+            $name = $partner['name'] ?? '';
+
+            $brandProducts = collect($productsList)->filter(
+                fn ($p) => ($p['brand'] ?? '') === $name
+            );
+
+            $brandOrders = collect($ordersList)->filter(function ($order) use ($name) {
+                $items = $order['items'] ?? [];
+
+                return collect($items)->contains(
+                    fn ($item) => ($item['brand'] ?? '') === $name
+                );
+            });
+
+            $totalSum = collect($ordersList)
+                ->flatMap(fn ($o) => $o['items'] ?? [])
+                ->filter(fn ($item) => ($item['brand'] ?? '') === $name)
+                ->sum(fn ($item) =>
+                    ($item['price'] ?? 0) * ($item['quantity'] ?? 1)
+                );
 
             $data[] = [
-                'brand'          => $brand->name,
-                'logo'           => $brand->logo,
-                'products_count' => $productsQuery->count(),
-                'orders_count'   => (clone $orderItemsQuery)->distinct('order_id')->count('order_id'),
-                'total_sum'      => (clone $orderItemsQuery)->sum(DB::raw('price * quantity')),
-                'average_price'  => $productsQuery->avg('price'),
+                'id'             => $partner['id'],
+                'brand'          => $name,
+                'logo'           => $partner['logo'] ?? null,
+                'products_count' => $brandProducts->count(),
+                'orders_count'   => $brandOrders->count(),
+                'total_sum'      => $totalSum,
+                'average_price'  => $brandProducts->avg('price') ?? 0,
             ];
         }
 
