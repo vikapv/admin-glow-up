@@ -49,10 +49,10 @@ class OrderController extends Controller
     }
 
     public function show(Order $order)
-    {
-        $order->load('items');
-        return view('admin.orders.show', compact('order'));
-    }
+{
+    $order->load('items', 'user'); 
+    return view('admin.orders.show', compact('order'));
+}
 
     public function updateStatus(Request $request, Order $order)
     {

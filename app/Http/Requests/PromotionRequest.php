@@ -14,10 +14,10 @@ class PromotionRequest extends FormRequest
     public function rules(): array
     {   
         return [
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'discount' => 'required|integer|min:1|max:100',
-            'category' => 'required|string',
+            'title'       => 'required|string|max:255',
+        'description' => 'nullable|string',
+        'discount'    => 'required|integer|min:1|max:100',
+        'category'    => 'nullable|string',
         ];
     }
 }

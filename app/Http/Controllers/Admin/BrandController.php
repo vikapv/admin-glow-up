@@ -13,8 +13,7 @@ class BrandController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Brand::withCount('partner')
-            ->with('partner');
+        $query = Brand::with('partner');
 
         if ($request->search) {
             $query->where('name', 'like', '%' . $request->search . '%');
@@ -23,7 +22,7 @@ class BrandController extends Controller
         $brands = $query->latest()->paginate(12);
 
         $stats = [
-            'total'    => Brand::count(),
+            'total'     => Brand::count(),
             'with_logo' => Brand::whereNotNull('logo')->count(),
         ];
 
@@ -34,7 +33,6 @@ class BrandController extends Controller
     {
         $brand->load('partner');
 
-        // статистика бренда
         $brandStats = [
             'products_count' => Product::where('brand', $brand->name)->count(),
             'orders_count'   => OrderItem::where('brand', $brand->name)
@@ -44,7 +42,6 @@ class BrandController extends Controller
             'avg_price'      => round(Product::where('brand', $brand->name)->avg('price')),
         ];
 
-        // последние товары бренда
         $products = Product::where('brand', $brand->name)
             ->withCount('reviews')
             ->latest()

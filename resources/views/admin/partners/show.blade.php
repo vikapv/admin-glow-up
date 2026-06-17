@@ -29,7 +29,6 @@
         {{-- ЛЕВАЯ КОЛОНКА: лого + действия --}}
         <div class="col-md-4">
 
-            {{-- Лого --}}
             <div class="card border-0 shadow-sm mb-3 text-center">
                 <div class="card-body py-4">
                     @if($partner->logo)
@@ -58,7 +57,6 @@
                 </div>
             </div>
 
-            {{-- Действия --}}
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-transparent border-0 pt-3">
                     <h6 class="fw-bold mb-0">Действия</h6>
@@ -66,7 +64,7 @@
                 <div class="card-body d-grid gap-2">
 
                     @if($partner->status != 'approved')
-                        <form action="{{ route('admin.partners.approve', $partner) }}"
+                        <form action="{{ route('admin.partners.approve', $partner->id) }}"
                               method="POST">
                             @csrf
                             <button class="btn btn-success w-100">
@@ -76,7 +74,7 @@
                     @endif
 
                     @if($partner->status != 'rejected')
-                        <form action="{{ route('admin.partners.reject', $partner) }}"
+                        <form action="{{ route('admin.partners.reject', $partner->id) }}"
                               method="POST">
                             @csrf
                             <button class="btn btn-outline-danger w-100">
@@ -94,7 +92,7 @@
 
                     <hr class="my-1">
 
-                    <form action="{{ route('admin.partners.delete', $partner) }}"
+                    <form action="{{ route('admin.partners.delete', $partner->id) }}"
                           method="POST"
                           onsubmit="return confirm('Удалить заявку «{{ $partner->name }}»? Это также удалит бренд.')">
                         @csrf
@@ -143,12 +141,12 @@
                         </tr>
                         <tr>
                             <td class="text-muted">Дата подачи</td>
-                            <td>{{ $partner->created_at->format('d.m.Y в H:i') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($partner->created_at)->format('d.m.Y в H:i') }}</td>
                         </tr>
                         @if($partner->updated_at != $partner->created_at)
                         <tr>
                             <td class="text-muted">Обновлено</td>
-                            <td>{{ $partner->updated_at->format('d.m.Y в H:i') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($partner->updated_at)->format('d.m.Y в H:i') }}</td>
                         </tr>
                         @endif
                     </table>
@@ -164,32 +162,27 @@
                 </div>
             </div>
 
-            {{-- Если принят — показываем связанный бренд --}}
-            @if($partner->status == 'approved')
-                @php $brand = \App\Models\Brand::where('partner_request_id', $partner->id)->first(); @endphp
-                @if($brand)
-                    <div class="card border-0 shadow-sm mt-3">
-                        <div class="card-header bg-transparent border-0 pt-3">
-                            <h6 class="fw-bold mb-0">Бренд в каталоге</h6>
-                        </div>
-                        <div class="card-body d-flex align-items-center gap-3">
-                            @if($brand->logo)
-                                <img src="{{ asset($brand->logo) }}"
-                                     style="width:48px;height:48px;object-fit:cover;
-                                            border-radius:8px;">
-                            @endif
-                            <div>
-                                <p class="fw-bold mb-0">{{ $brand->name }}</p>
-                                <p class="text-muted small mb-0">Активный бренд</p>
-                            </div>
-                            <a href="{{ route('admin.brands.show', $brand) }}"
-                               class="btn btn-sm btn-outline-primary ms-auto">
-                                Открыть бренд →
-                            </a>
-                        </div>
-                    </div>
-                @endif
+            @if($partner->status == 'approved' && $brand)
+    <div class="card border-0 shadow-sm mt-3">
+        <div class="card-header bg-transparent border-0 pt-3">
+            <h6 class="fw-bold mb-0">Бренд в каталоге</h6>
+        </div>
+        <div class="card-body d-flex align-items-center gap-3">
+            @if($brand->logo)
+                <img src="http://127.0.0.1:8001/storage/{{ $brand->logo }}"
+                     style="width:48px;height:48px;object-fit:cover;border-radius:8px;">
             @endif
+            <div>
+                <p class="fw-bold mb-0">{{ $brand->name }}</p>
+                <p class="text-muted small mb-0">Активный бренд</p>
+            </div>
+            <a href="{{ route('admin.brands.show', $brand->id) }}"
+               class="btn btn-sm btn-outline-primary ms-auto">
+                Открыть бренд →
+            </a>
+        </div>
+    </div>
+@endif
 
         </div>
 

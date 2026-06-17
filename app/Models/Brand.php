@@ -6,14 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Brand extends Model
 {
-    protected $fillable = [
-        'name',
-        'logo',
-        'partner_request_id'
-    ];
+    protected $fillable = ['name', 'logo', 'partner_request_id'];
 
     public function partner()
-{
-    return $this->belongsTo(PartnerRequest::class, 'partner_request_id');
-}
+    {
+        return $this->belongsTo(\App\Models\PartnerRequest::class, 'partner_request_id');
+    }
 }

@@ -7,10 +7,10 @@ use App\Models\Brand;
 use App\Models\Product;
 use App\Models\OrderItem;
 use App\Models\Order;
-use App\Models\AdminUser;
 use App\Models\PartnerRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\User;
 
 class DashboardController extends Controller
 {
@@ -20,7 +20,7 @@ class DashboardController extends Controller
         $globalStats = [
             'total_orders'     => Order::count(),
             'total_revenue'    => OrderItem::sum(DB::raw('price * quantity')),
-            'total_users'      => AdminUser::count(),
+            'total_users' => User::where('status', 'active')->count(),
             'pending_partners' => PartnerRequest::where('status', 'pending')->count(),
         ];
 

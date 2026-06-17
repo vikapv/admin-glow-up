@@ -101,9 +101,8 @@
                         {{-- Картинка товара --}}
                         <div class="text-center mb-3">
                             @if($product->image)
-                                <img src="{{ asset('storage/' . $product->image) }}"
-                                     style="width:80px;height:80px;object-fit:cover;
-                                            border-radius:10px;">
+                                <img src="http://127.0.0.1:8001/storage/{{ $product->image }}"
+     style="width:64px;height:64px;object-fit:cover;border-radius:10px;">
                             @else
                                 <div style="width:80px;height:80px;background:#f5f5f5;
                                             border-radius:10px;display:flex;

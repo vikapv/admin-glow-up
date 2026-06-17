@@ -56,4 +56,6 @@ class PromoCodeController extends Controller
 
         return redirect()->back()->with('success', 'Промокод «' . $code . '» удалён');
     }
+
+    
 }

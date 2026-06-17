@@ -28,9 +28,10 @@
 
     <div class="row g-4">
 
-        {{-- ЛЕВАЯ КОЛОНКА: инфо + смена статуса --}}
+        {{-- ЛЕВАЯ КОЛОНКА --}}
         <div class="col-md-4">
 
+            {{-- Информация о заказе --}}
             <div class="card border-0 shadow-sm mb-3">
                 <div class="card-header bg-transparent border-0 pt-3">
                     <h6 class="fw-bold mb-0">Информация о заказе</h6>
@@ -70,6 +71,69 @@
                             </td>
                         </tr>
                     </table>
+                </div>
+            </div>
+
+            {{-- Пользователь --}}
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-header bg-transparent border-0 pt-3">
+                    <h6 class="fw-bold mb-0">Покупатель</h6>
+                </div>
+                <div class="card-body">
+                    @if($order->user)
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <div style="width:44px;height:44px;border-radius:50%;
+                                        background:#e9ecef;display:flex;flex-shrink:0;
+                                        align-items:center;justify-content:center;
+                                        font-weight:700;font-size:16px;color:#555;">
+                                {{ strtoupper(substr($order->user->name, 0, 1)) }}
+                            </div>
+                            <div>
+                                <p class="fw-bold mb-0">{{ $order->user->name }}</p>
+                                <p class="text-muted small mb-0">
+                                    ID #{{ $order->user->id }}
+                                </p>
+                            </div>
+                        </div>
+                        <table class="table table-sm mb-0">
+                            <tr>
+                                <td class="text-muted">Email</td>
+                                <td>
+                                    <a href="mailto:{{ $order->user->email }}"
+                                       class="text-decoration-none small">
+                                        {{ $order->user->email }}
+                                    </a>
+                                </td>
+                            </tr>
+                            @if($order->user->phone)
+                            <tr>
+                                <td class="text-muted">Телефон</td>
+                                <td class="small">{{ $order->user->phone }}</td>
+                            </tr>
+                            @endif
+                            <tr>
+                                <td class="text-muted">Статус</td>
+                                <td>
+                                    @if($order->user->status === 'active')
+                                        <span class="badge bg-success">Активен</span>
+                                    @else
+                                        <span class="badge bg-danger">Забанен</span>
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Регистрация</td>
+                                <td class="small">
+                                    {{ $order->user->created_at->format('d.m.Y') }}
+                                </td>
+                            </tr>
+                        </table>
+                    @else
+                        <p class="text-muted mb-0">
+                            <i class="bi bi-person-x me-1"></i>
+                            Пользователь удалён или не найден
+                        </p>
+                    @endif
                 </div>
             </div>
 
@@ -131,7 +195,7 @@
                             <tr>
                                 <td class="ps-3">
                                     @if($item->image)
-                                        <img src="{{ asset('storage/' . $item->image) }}"
+                                        <img src="http://127.0.0.1:8001/storage/{{ $item->image }}"
                                              style="width:44px;height:44px;
                                                     object-fit:cover;border-radius:8px;">
                                     @else

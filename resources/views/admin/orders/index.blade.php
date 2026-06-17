@@ -165,7 +165,7 @@
                                 <div class="d-flex align-items-center gap-2">
                                     @foreach($order->items->take(3) as $item)
                                         @if($item->image)
-                                            <img src="{{ asset('storage/' . $item->image) }}"
+                                            <img src="http://127.0.0.1:8001/storage/{{ $item->image }}"
                                                  style="width:32px;height:32px;object-fit:cover;
                                                         border-radius:6px;border:1px solid #eee;">
                                         @else

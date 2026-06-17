@@ -94,7 +94,7 @@
                     <div class="col-auto text-center d-none d-md-block">
                         <p class="text-muted mb-0" style="font-size:11px;">Создана</p>
                         <p class="mb-0 small fw-bold">
-                            {{ $promotion->created_at->format('d.m.Y') }}
+                            {{ $promotion->created_at ? $promotion->created_at->format('d.m.Y') : '—' }}
                         </p>
                     </div>
 

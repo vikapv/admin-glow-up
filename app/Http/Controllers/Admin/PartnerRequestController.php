@@ -29,7 +29,6 @@ class PartnerRequestController extends Controller
             'rejected' => 0,
         ];
 
-        // Пагинация
         $perPage     = 12;
         $currentPage = (int)($request->page ?? 1);
         $paginated   = new LengthAwarePaginator(
@@ -45,6 +44,17 @@ class PartnerRequestController extends Controller
             'stats'    => $stats,
         ]);
     }
+
+    public function show($id)
+{
+    $response = Http::get("{$this->api}/partners/{$id}");
+    $partner  = $this->arrayToObject($response->json() ?? []);
+
+    // Берём бренд напрямую из локальной БД
+    $brand = \App\Models\Brand::where('partner_request_id', $id)->first();
+
+    return view('admin.partners.show', compact('partner', 'brand'));
+}
 
     public function approve($id)
     {
@@ -82,11 +92,8 @@ class PartnerRequestController extends Controller
         return redirect()->back()->with('error', 'Ошибка при удалении');
     }
 
-    public function show($id)
+    private function arrayToObject(array $data): object
     {
-        $response = Http::get("{$this->api}/partners/{$id}");
-        $partner  = (object)($response->json() ?? []);
-
-        return view('admin.partners.show', compact('partner'));
+        return json_decode(json_encode($data));
     }
 }

@@ -10,6 +10,7 @@ class PromoCode extends Model
     'code',
     'discount',
     'limit',
+      'used_count',
     'is_active'
 ];
 }

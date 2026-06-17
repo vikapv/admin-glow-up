@@ -120,7 +120,6 @@
                 <div class="card border-0 shadow-sm h-100">
                     <div class="card-body d-flex flex-column">
 
-                        {{-- Лого + инициалы если нет лого --}}
                         <div class="text-center mb-3">
                             @if(!empty($partner->logo))
                                 <img src="http://127.0.0.1:8001/storage/{{ $partner->logo }}"
@@ -137,15 +136,12 @@
                             @endif
                         </div>
 
-                        {{-- Название --}}
                         <h6 class="fw-bold text-center mb-1">{{ $partner->name }}</h6>
 
-                        {{-- Email --}}
                         <p class="text-center text-muted small mb-2">
                             {{ $partner->email }}
                         </p>
 
-                        {{-- Статус --}}
                         <div class="text-center mb-3">
                             @if($partner->status == 'pending')
                                 <span class="badge bg-warning text-dark">На рассмотрении</span>
@@ -156,12 +152,10 @@
                             @endif
                         </div>
 
-                        {{-- Дата подачи --}}
                         <p class="text-center text-muted mb-3" style="font-size:11px;">
                             Подано: {{ \Carbon\Carbon::parse($partner->created_at)->format('d.m.Y') }}
                         </p>
 
-                        {{-- Быстрые действия для pending --}}
                         @if($partner->status == 'pending')
                             <div class="row g-1 mb-2">
                                 <div class="col-6">
@@ -194,7 +188,6 @@
                                   method="POST"
                                   onsubmit="return confirm('Удалить заявку «{{ $partner->name }}»?')">
                                 @csrf
-                                @method('DELETE')
                                 <button class="btn btn-outline-danger btn-sm w-100">
                                     <i class="bi bi-trash"></i> Удалить
                                 </button>

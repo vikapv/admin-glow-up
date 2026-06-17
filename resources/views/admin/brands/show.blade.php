@@ -19,10 +19,9 @@
 
     <div class="row g-4">
 
-        {{-- ЛЕВАЯ КОЛОНКА: лого + инфо --}}
+        {{-- ЛЕВАЯ КОЛОНКА --}}
         <div class="col-md-4">
 
-            {{-- Лого + статус --}}
             <div class="card border-0 shadow-sm mb-3 text-center">
                 <div class="card-body py-4">
                     @if($brand->logo)
@@ -38,13 +37,11 @@
                             {{ strtoupper(substr($brand->name, 0, 2)) }}
                         </div>
                     @endif
-
                     <h5 class="fw-bold mb-2">{{ $brand->name }}</h5>
                     <span class="badge bg-success">Активный бренд</span>
                 </div>
             </div>
 
-            {{-- Инфо о партнёре --}}
             @if($brand->partner)
                 <div class="card border-0 shadow-sm mb-3">
                     <div class="card-header bg-transparent border-0 pt-3">
@@ -67,13 +64,11 @@
                             </tr>
                             <tr>
                                 <td class="text-muted">Статус</td>
-                                <td>
-                                    <span class="badge bg-success">Принят</span>
-                                </td>
+                                <td><span class="badge bg-success">Принят</span></td>
                             </tr>
                         </table>
                         <div class="mt-3">
-                            <a href="{{ route('admin.partners.show', $brand->partner) }}"
+                            <a href="{{ route('admin.partners.show', $brand->partner->id) }}"
                                class="btn btn-sm btn-outline-primary w-100">
                                 Открыть заявку →
                             </a>
@@ -82,7 +77,6 @@
                 </div>
             @endif
 
-            {{-- Детали бренда --}}
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-transparent border-0 pt-3">
                     <h6 class="fw-bold mb-0">Детали</h6>
@@ -91,11 +85,11 @@
                     <table class="table table-sm mb-0">
                         <tr>
                             <td class="text-muted">Добавлен</td>
-                            <td>{{ $brand->created_at->format('d.m.Y') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($brand->created_at)->format('d.m.Y') }}</td>
                         </tr>
                         <tr>
                             <td class="text-muted">Обновлён</td>
-                            <td>{{ $brand->updated_at->format('d.m.Y') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($brand->updated_at)->format('d.m.Y') }}</td>
                         </tr>
                     </table>
                 </div>
@@ -103,34 +97,26 @@
 
         </div>
 
-        {{-- ПРАВАЯ КОЛОНКА: аналитика + товары --}}
+        {{-- ПРАВАЯ КОЛОНКА --}}
         <div class="col-md-8">
 
-            {{-- Аналитика --}}
             <div class="row g-3 mb-3">
-
                 <div class="col-6 col-md-3">
                     <div class="card border-0 shadow-sm text-center">
                         <div class="card-body py-3">
                             <p class="text-muted small mb-1">Товаров</p>
-                            <h4 class="fw-bold mb-0">
-                                {{ $brandStats['products_count'] }}
-                            </h4>
+                            <h4 class="fw-bold mb-0">{{ $brandStats['products_count'] }}</h4>
                         </div>
                     </div>
                 </div>
-
                 <div class="col-6 col-md-3">
                     <div class="card border-0 shadow-sm text-center">
                         <div class="card-body py-3">
                             <p class="text-muted small mb-1">Заказов</p>
-                            <h4 class="fw-bold mb-0">
-                                {{ $brandStats['orders_count'] }}
-                            </h4>
+                            <h4 class="fw-bold mb-0">{{ $brandStats['orders_count'] }}</h4>
                         </div>
                     </div>
                 </div>
-
                 <div class="col-6 col-md-3">
                     <div class="card border-0 shadow-sm text-center">
                         <div class="card-body py-3">
@@ -141,7 +127,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="col-6 col-md-3">
                     <div class="card border-0 shadow-sm text-center">
                         <div class="card-body py-3">
@@ -152,18 +137,14 @@
                         </div>
                     </div>
                 </div>
-
             </div>
 
-            {{-- Товары бренда --}}
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-transparent border-0 pt-3
                             d-flex justify-content-between align-items-center">
                     <h6 class="fw-bold mb-0">
                         Товары бренда
-                        <span class="badge bg-secondary ms-1">
-                            {{ $brandStats['products_count'] }}
-                        </span>
+                        <span class="badge bg-secondary ms-1">{{ $brandStats['products_count'] }}</span>
                     </h6>
                     @if($brandStats['products_count'] > 0)
                         <a href="{{ route('admin.products.index', ['brand' => $brand->name]) }}"
@@ -197,16 +178,13 @@
                                         <tr>
                                             <td class="ps-3">
                                                 @if($product->image)
-                                                    <img src="{{ asset('storage/' . $product->image) }}"
-                                                         style="width:40px;height:40px;
-                                                                object-fit:cover;
-                                                                border-radius:8px;">
+    <img src="http://127.0.0.1:8001/storage/{{ $product->image }}"
+         style="width:40px;height:40px;
+                object-fit:cover;border-radius:8px;">
                                                 @else
                                                     <div style="width:40px;height:40px;
-                                                                background:#f5f5f5;
-                                                                border-radius:8px;
-                                                                display:flex;
-                                                                align-items:center;
+                                                                background:#f5f5f5;border-radius:8px;
+                                                                display:flex;align-items:center;
                                                                 justify-content:center;
                                                                 font-size:10px;color:#aaa;">
                                                         нет
@@ -241,10 +219,8 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                <a href="{{ route('admin.products.show', $product) }}"
-                                                   class="btn btn-sm btn-outline-secondary">
-                                                    →
-                                                </a>
+                                                <a href="{{ route('admin.products.show', $product->id) }}"
+                                                   class="btn btn-sm btn-outline-secondary">→</a>
                                             </td>
                                         </tr>
                                     @endforeach

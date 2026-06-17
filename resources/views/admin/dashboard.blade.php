@@ -49,7 +49,7 @@
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between mb-2">
-                        <span class="text-muted small">Пользователи</span>
+                        <span class="text-muted small">Активные пользователи</span>
                         <span class="bg-info bg-opacity-10 text-info rounded p-1">
                             <i class="bi bi-people fs-5"></i>
                         </span>

@@ -14,7 +14,6 @@
 
     {{-- МЕТРИКИ --}}
     <div class="row g-3 mb-4">
-
         <div class="col-md-6">
             <div class="card border-0 shadow-sm">
                 <div class="card-body py-3">
@@ -23,7 +22,6 @@
                 </div>
             </div>
         </div>
-
         <div class="col-md-6">
             <div class="card border-0 shadow-sm">
                 <div class="card-body py-3">
@@ -32,7 +30,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 
     {{-- ПОИСК --}}
@@ -46,10 +43,7 @@
                        value="{{ request('search') }}">
                 <button class="btn btn-primary px-4">Найти</button>
                 @if(request('search'))
-                    <a href="{{ route('admin.brands.index') }}"
-                       class="btn btn-outline-secondary">
-                        ✕
-                    </a>
+                    <a href="{{ route('admin.brands.index') }}" class="btn btn-outline-secondary">✕</a>
                 @endif
             </form>
         </div>
@@ -70,12 +64,10 @@
                 <div class="card border-0 shadow-sm h-100">
                     <div class="card-body d-flex flex-column align-items-center text-center">
 
-                        {{-- Лого --}}
                         <div class="mb-3">
                             @if($brand->logo)
                                 <img src="http://127.0.0.1:8001/storage/{{ $brand->logo }}"
-                                     style="width:90px;height:90px;object-fit:cover;
-                                            border-radius:14px;">
+                                     style="width:90px;height:90px;object-fit:cover;border-radius:14px;">
                             @else
                                 <div style="width:90px;height:90px;border-radius:14px;
                                             background:#e9ecef;display:flex;
@@ -86,10 +78,8 @@
                             @endif
                         </div>
 
-                        {{-- Название --}}
                         <h6 class="fw-bold mb-1">{{ $brand->name }}</h6>
 
-                        {{-- Партнёр --}}
                         @if($brand->partner)
                             <p class="text-muted mb-2" style="font-size:12px;">
                                 <i class="bi bi-person-check me-1"></i>
@@ -99,13 +89,12 @@
 
                         <span class="badge bg-success mb-3">Активный бренд</span>
 
-                        {{-- Дата --}}
                         <p class="text-muted mb-3" style="font-size:11px;">
-                            Добавлен: {{ $brand->created_at->format('d.m.Y') }}
+                            Добавлен: {{ \Carbon\Carbon::parse($brand->created_at)->format('d.m.Y') }}
                         </p>
 
                         <div class="mt-auto w-100">
-                            <a href="{{ route('admin.brands.show', $brand) }}"
+                            <a href="{{ route('admin.brands.show', $brand->id) }}"
                                class="btn btn-outline-primary btn-sm w-100">
                                 Подробнее →
                             </a>
@@ -119,8 +108,7 @@
                 <i class="bi bi-award fs-1 d-block mb-3 opacity-25"></i>
                 <h5>Брендов пока нет</h5>
                 <p>Они появятся после одобрения заявок партнёров</p>
-                <a href="{{ route('admin.partners.index') }}"
-                   class="btn btn-outline-primary mt-2">
+                <a href="{{ route('admin.partners.index') }}" class="btn btn-outline-primary mt-2">
                     Перейти к заявкам →
                 </a>
             </div>
@@ -134,7 +122,7 @@
                 Показано {{ $brands->firstItem() }}–{{ $brands->lastItem() }}
                 из {{ $brands->total() }}
             </small>
-            {{ $brands->withQueryString()->links() }}
+            {{ $brands->withQueryString()->links('pagination::bootstrap-5') }}
         </div>
     @endif
 

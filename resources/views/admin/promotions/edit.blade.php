@@ -97,7 +97,7 @@
                                 -{{ $promotion->discount }}%
                             </span>
                             <span class="text-muted small ms-2">
-                                · создана {{ $promotion->created_at->format('d.m.Y') }}
+                                · создана {{ $promotion->created_at ? $promotion->created_at->format('d.m.Y') : '—' }}
                             </span>
                         </div>
 

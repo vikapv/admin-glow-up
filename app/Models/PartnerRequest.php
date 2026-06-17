@@ -6,12 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class PartnerRequest extends Model
 {
-    protected $fillable = [
-        'name',
-        'logo',
-        'description',
-        'email',
-        'status'
-    ];
-}
+    protected $table = 'partner_requests';
 
+    protected $fillable = ['name', 'logo', 'description', 'email', 'status'];
+}

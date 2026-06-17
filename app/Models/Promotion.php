@@ -12,10 +12,12 @@ class Promotion extends Model
     protected $fillable = [
         'title',
         'description',
-        'discount_percent',
-        'discount_active',
+        'discount',   // ← было discount_percent, в миграции колонка называется discount
         'category',
-        'discount_start',
-        'discount_end',
     ];
+
+    public function products()
+    {
+        return $this->hasMany(\App\Models\Product::class, 'category', 'category');
+    }
 }
