@@ -7,6 +7,7 @@ use App\Models\PartnerRequest;
 use App\Models\Brand;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\Partner;
 
 class PartnerRequestController extends Controller
 {
@@ -52,26 +53,38 @@ class PartnerRequestController extends Controller
     }
 
     public function approve($id)
-    {
-        $partner = PartnerRequest::findOrFail($id);
+        {
+            $partnerRequest = PartnerRequest::findOrFail($id);
 
-        DB::transaction(function () use ($partner) {
-            $partner->status = 'approved';
-            $partner->save();
+            DB::transaction(function () use ($partnerRequest) {
 
-            // Создаём бренд, если его ещё нет, иначе обновляем данные
-            Brand::updateOrCreate(
-                ['partner_request_id' => $partner->id],
-                [
-                    'name' => $partner->name,
-                    'logo' => $partner->logo,
-                ]
-            );
-        });
+                $partnerRequest->status = 'approved';
+                $partnerRequest->save();
 
-        return redirect()->route('admin.partners.show', $partner->id)
-            ->with('success', 'Партнёр принят и добавлен в бренды');
-    }
+                // 🔥 ВОССТАНАВЛИВАЕМ СТАРУЮ ЛОГИКУ
+                Partner::updateOrCreate(
+                    ['email' => $partnerRequest->email],
+                    [
+                        'name' => $partnerRequest->name,
+                        'email' => $partnerRequest->email,
+                        'password' => $partnerRequest->password ?? null,
+                        'status' => $partnerRequest->status,
+                    ]
+                );
+
+                Brand::updateOrCreate(
+                    ['partner_request_id' => $partnerRequest->id],
+                    [
+                        'name' => $partnerRequest->name,
+                        'logo' => $partnerRequest->logo,
+                    ]
+                );
+            });
+
+            return redirect()
+                ->route('admin.partners.show', $partnerRequest->id)
+                ->with('success', 'Партнёр одобрен и добавлен');
+        }
 
     public function reject($id)
     {
