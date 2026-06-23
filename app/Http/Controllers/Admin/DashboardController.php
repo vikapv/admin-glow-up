@@ -3,278 +3,80 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\User;
+use App\Models\Product;
+use App\Models\Brand;
+use App\Models\PartnerRequest;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
-    private string $apiBase = 'http://127.0.0.1:8001/api';
-
-
     public function index(Request $request)
     {
-
-        // API данные
-
-        $partnersResponse = Http::get("{$this->apiBase}/partners")->json();
-
-        $partnerReqs = Http::get(
-            "{$this->apiBase}/admin/partner-requests"
-        )->json() ?? [];
-
-
-        $products = Http::get(
-            "{$this->apiBase}/products"
-        )->json() ?? [];
-
-
-        $orders = Http::get(
-            "{$this->apiBase}/orders"
-        )->json() ?? [];
-
-
-
-        // пользователи
-
-        $users = Http::get(
-            "{$this->apiBase}/users"
-        )->json() ?? [];
-
-
-
-
-        // нормализация
-
-
-        $partnersList =
-            $partnersResponse['partners'] ?? [];
-
-
-        $partnerReqsList =
-            $partnerReqs['data'] ?? $partnerReqs;
-
-
-        $productsList =
-            $products['data'] ?? $products;
-
-
-        $ordersList =
-            $orders['data'] ?? $orders;
-
-
-        $usersList =
-            $users['data'] ?? $users;
-
-
-
-
-        // ======================
-        // СТАТИСТИКА
-        // ======================
-
-
+        // ГЛОБАЛЬНАЯ СТАТИСТИКА
         $globalStats = [
-
-            'total_orders' => count($ordersList),
-
-
-            'total_revenue' =>
-                collect($ordersList)
-                ->sum('total_price'),
-
-
-            'total_users' =>
-                count($usersList),
-
-
-            'pending_partners' =>
-                collect($partnerReqsList)
-                ->where('status','pending')
-                ->count(),
-
+            'total_orders'     => Order::count(),
+            'total_revenue'    => OrderItem::sum(DB::raw('price * quantity')),
+            'total_users'      => User::count(),
+            'pending_partners' => PartnerRequest::where('status', 'pending')->count(),
         ];
 
-
-
-
-
-        // последние заказы
-
-
-        $recentOrders = collect($ordersList)
-
-            ->sortByDesc('created_at')
-
+        // ПОСЛЕДНИЕ ЗАКАЗЫ
+        $recentOrders = Order::with('items')
+            ->latest()
             ->take(5)
+            ->get();
 
-            ->values();
-
-
-
-
-
-        // заявки партнеров
-
-
-        $pendingPartners = collect($partnerReqsList)
-
-            ->where('status','pending')
-
-            ->sortByDesc('created_at')
-
+        // ОЖИДАЮЩИЕ ЗАЯВКИ ПАРТНЁРОВ
+        $pendingPartners = PartnerRequest::where('status', 'pending')
+            ->latest()
             ->take(5)
+            ->get();
 
-            ->values();
-
-
-
-
-
-
-
-        // поиск
-
-
+        // ПОИСК ПО БРЕНДАМ (одобренные партнёры = PartnerRequest со статусом approved)
         $search = $request->input('search');
 
-
-        if($search){
-
-            $partnersList = array_filter(
-                $partnersList,
-
-                fn($p)=>
-
-                str_contains(
-                    strtolower($p['name'] ?? ''),
-                    strtolower($search)
-                )
-
-            );
-
+        $partnersQuery = PartnerRequest::where('status', 'approved');
+        if ($search) {
+            $partnersQuery->where('name', 'like', '%' . $search . '%');
         }
+        $approvedPartners = $partnersQuery->get();
 
+        // АНАЛИТИКА БРЕНДОВ
+        $data = [];
 
+        foreach ($approvedPartners as $partner) {
+            $name = $partner->name;
 
+            $productsCount = Product::where('brand', $name)->count();
+            $avgPrice      = Product::where('brand', $name)->avg('price') ?? 0;
 
+            $totalSum = OrderItem::where('brand', $name)
+                ->sum(DB::raw('price * quantity'));
 
-        // аналитика брендов
+            $ordersCount = OrderItem::where('brand', $name)
+                ->distinct('order_id')
+                ->count('order_id');
 
-
-        $data=[];
-
-
-        foreach($partnersList as $partner){
-
-
-            $name=$partner['name'] ?? '';
-
-
-
-            $brandProducts = collect($productsList)
-
-                ->filter(fn($p)=>
-
-                    ($p['brand'] ?? '') === $name
-
-                );
-
-
-
-
-
-            $brandOrders = collect($ordersList)
-
-                ->filter(function($order) use ($name){
-
-
-                    return collect(
-                        $order['items'] ?? []
-                    )
-
-                    ->contains(fn($item)=>
-
-                        ($item['brand'] ?? '') === $name
-
-                    );
-
-
-                });
-
-
-
-
-
-            $totalSum = collect($ordersList)
-
-                ->flatMap(fn($o)=>
-
-                    $o['items'] ?? []
-
-                )
-
-                ->filter(fn($item)=>
-
-                    ($item['brand'] ?? '') === $name
-
-                )
-
-                ->sum(fn($item)=>
-
-                    ($item['price'] ?? 0)
-                    *
-                    ($item['quantity'] ?? 1)
-
-                );
-
-
-
-
-
-            $data[]=[
-
-
-                'id'=>$partner['id'],
-
-                'brand'=>$name,
-
-                'logo'=>$partner['logo'] ?? null,
-
-
-                'products_count'=>
-                    $brandProducts->count(),
-
-
-                'orders_count'=>
-                    $brandOrders->count(),
-
-
-                'total_sum'=>
-                    $totalSum,
-
-
-                'average_price'=>
-                    $brandProducts->avg('price') ?? 0,
-
-
+            $data[] = [
+                'id'             => $partner->id,
+                'brand'          => $name,
+                'logo'           => $partner->logo,
+                'products_count' => $productsCount,
+                'orders_count'   => $ordersCount,
+                'total_sum'      => $totalSum,
+                'average_price'  => round($avgPrice),
             ];
-
         }
 
-
-
-
-
-        return view(
-            'admin.dashboard',
-            compact(
-                'globalStats',
-                'recentOrders',
-                'pendingPartners',
-                'data'
-            )
-        );
-
+        return view('admin.dashboard', compact(
+            'globalStats',
+            'recentOrders',
+            'pendingPartners',
+            'data'
+        ));
     }
-
 }
