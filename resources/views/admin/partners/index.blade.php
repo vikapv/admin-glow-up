@@ -68,7 +68,9 @@
 
                 <div class="col-md-4">
                     <select name="status" class="form-select" onchange="this.form.submit()">
-                        <option value="">Все заявки</option>
+                        <option value="" {{ request('status') === null || request('status') === '' ? 'selected' : '' }}>
+                            Все заявки
+                        </option>
                         <option value="pending"
                             {{ request('status') == 'pending' ? 'selected' : '' }}>
                             На рассмотрении
@@ -177,6 +179,26 @@
                                     </form>
                                 </div>
                             </div>
+                        @elseif($partner->status == 'approved')
+                            <div class="mb-2">
+                                <form action="{{ route('admin.partners.reject', $partner->id) }}"
+                                      method="POST">
+                                    @csrf
+                                    <button class="btn btn-outline-danger btn-sm w-100">
+                                        ✕ Отклонить
+                                    </button>
+                                </form>
+                            </div>
+                        @elseif($partner->status == 'rejected')
+                            <div class="mb-2">
+                                <form action="{{ route('admin.partners.approve', $partner->id) }}"
+                                      method="POST">
+                                    @csrf
+                                    <button class="btn btn-outline-success btn-sm w-100">
+                                        ✓ Принять снова
+                                    </button>
+                                </form>
+                            </div>
                         @endif
 
                         <div class="mt-auto d-grid gap-2">
@@ -207,13 +229,13 @@
     </div>
 
     {{-- ПАГИНАЦИЯ --}}
-    @if($requests->total() > 12)
+    @if($requests->hasPages())
         <div class="d-flex justify-content-between align-items-center mt-4">
             <small class="text-muted">
                 Показано {{ $requests->firstItem() }}–{{ $requests->lastItem() }}
                 из {{ $requests->total() }}
             </small>
-            {{ $requests->withQueryString()->links('pagination::bootstrap-5') }}
+            {{ $requests->links('pagination::bootstrap-5') }}
         </div>
     @endif
 

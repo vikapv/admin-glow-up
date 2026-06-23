@@ -42,8 +42,7 @@
                 </div>
             </div>
 
-
-            @if(!empty($brand->email))
+            @if($brand->partner)
                 <div class="card border-0 shadow-sm mb-3">
                     <div class="card-header bg-transparent border-0 pt-3">
                         <h6 class="fw-bold mb-0">Партнёр</h6>
@@ -52,14 +51,14 @@
                         <table class="table table-sm mb-0">
                             <tr>
                                 <td class="text-muted">Название</td>
-                                <td class="fw-bold">{{ $brand->name }}</td>
+                                <td class="fw-bold">{{ $brand->partner->name }}</td>
                             </tr>
                             <tr>
                                 <td class="text-muted">Email</td>
                                 <td>
-                                    <a href="mailto:{{ $brand->email }}"
+                                    <a href="mailto:{{ $brand->partner->email }}"
                                     class="text-decoration-none small">
-                                        {{ $brand->email }}
+                                        {{ $brand->partner->email }}
                                     </a>
                                 </td>
                             </tr>
@@ -69,7 +68,7 @@
                             </tr>
                         </table>
                         <div class="mt-3">
-                            <a href="{{ route('admin.partners.show', $brand->id) }}"
+                            <a href="{{ route('admin.partners.show', $brand->partner_request_id) }}"
                                class="btn btn-sm btn-outline-primary w-100">
                                 Открыть заявку →
                             </a>

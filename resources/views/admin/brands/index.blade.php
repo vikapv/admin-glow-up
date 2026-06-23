@@ -80,16 +80,12 @@
 
                         <h6 class="fw-bold mb-1">{{ $brand->name }}</h6>
 
-
-                        @if(!empty($brand->email))
-
+                        @if($brand->partner && !empty($brand->partner->email))
                             <p class="text-muted mb-2" style="font-size:12px;">
                                 <i class="bi bi-person-check me-1"></i>
-                                {{ $brand->email }}
+                                {{ $brand->partner->email }}
                             </p>
                         @endif
-                        
-                        {{-- Статус --}}
 
                         <span class="badge bg-success mb-3">Активный бренд</span>
 
@@ -126,7 +122,7 @@
                 Показано {{ $brands->firstItem() }}–{{ $brands->lastItem() }}
                 из {{ $brands->total() }}
             </small>
-            {{ $brands->withQueryString()->links('pagination::bootstrap-5') }}
+            {{ $brands->links('pagination::bootstrap-5') }}
         </div>
     @endif
 

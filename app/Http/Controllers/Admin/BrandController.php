@@ -3,80 +3,65 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Brand;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 class BrandController extends Controller
 {
+    // Используется только чтобы дотянуть товары/заказы по бренду из внешнего сервиса
     private string $api = 'http://127.0.0.1:8001/api';
 
     public function index(Request $request)
     {
-        $response = Http::get("{$this->api}/brands");
-        $json     = $response->json();
+        $query = Brand::with('partner');
 
-        $allBrands = collect($json['brands'] ?? [])
-            ->map(fn($b) => (object)$b);
-
-        if ($request->search) {
-            $allBrands = $allBrands->filter(fn($b) =>
-                str_contains(
-                    mb_strtolower($b->name),
-                    mb_strtolower($request->search)
-                )
-            );
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
         }
 
-        $stats = $json['stats'] ?? [
-            'total' => 0,
-            'with_logo' => 0,
+        $brands = $query->latest()->paginate(12)->withQueryString();
+
+        $stats = [
+            'total'     => Brand::count(),
+            'with_logo' => Brand::whereNotNull('logo')->where('logo', '!=', '')->count(),
         ];
 
-        $perPage = 12;
-        $currentPage = (int)($request->page ?? 1);
-
-        $paginated = new LengthAwarePaginator(
-            $allBrands->values()->slice(
-                ($currentPage - 1) * $perPage,
-                $perPage
-            )->values(),
-            $allBrands->count(),
-            $perPage,
-            $currentPage,
-            [
-                'path' => $request->url(),
-                'query' => $request->query(),
-            ]
-        );
-
         return view('admin.brands.index', [
-            'brands' => $paginated,
-            'stats' => $stats,
+            'brands' => $brands,
+            'stats'  => $stats,
         ]);
     }
 
     public function show($id)
     {
-        $response = Http::get("{$this->api}/brands/{$id}");
-        $json = $response->json();
+        $brand = Brand::with('partner')->findOrFail($id);
 
-        $brand = (object)($json['brand'] ?? []);
+        // Товары/заказы/выручка по-прежнему берём из внешнего сервиса,
+        // фильтруя по имени бренда (или замените на ID, если внешний API его поддерживает)
+        $response = Http::get("{$this->api}/products", [
+            'brand' => $brand->name,
+        ]);
+        $json = $response->successful() ? $response->json() : [];
 
-        $brandStats = $json['stats'] ?? [
-            'products_count' => 0,
-            'orders_count' => 0,
-            'total_sum' => 0,
-            'avg_price' => 0,
+        $products = collect($json['products'] ?? [])->map(fn($p) => (object) $p);
+
+        $ordersCount = $json['stats']['orders_count'] ?? 0;
+        $totalSum    = $json['stats']['total_sum'] ?? 0;
+        $avgPrice    = $products->count() > 0
+            ? $products->avg('price')
+            : 0;
+
+        $brandStats = [
+            'products_count' => $products->count(),
+            'orders_count'   => $ordersCount,
+            'total_sum'      => $totalSum,
+            'avg_price'      => $avgPrice,
         ];
 
-        $products = collect($json['products'] ?? [])
-            ->map(fn($p) => (object)$p);
+        // Показываем максимум 6 товаров на странице бренда (как в Blade)
+        $products = $products->take(6);
 
-        return view('admin.brands.show', compact(
-            'brand',
-            'brandStats',
-            'products'
-        ));
+        return view('admin.brands.show', compact('brand', 'brandStats', 'products'));
     }
 }
