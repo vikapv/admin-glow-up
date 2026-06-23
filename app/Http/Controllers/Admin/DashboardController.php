@@ -51,6 +51,8 @@ class DashboardController extends Controller
         foreach ($approvedPartners as $partner) {
             $name = $partner->name;
 
+            $brand = Brand::where('partner_request_id', $partner->id)->first();
+
             $productsCount = Product::where('brand', $name)->count();
             $avgPrice      = Product::where('brand', $name)->avg('price') ?? 0;
 
@@ -62,7 +64,7 @@ class DashboardController extends Controller
                 ->count('order_id');
 
             $data[] = [
-                'id'             => $partner->id,
+                'id'             => $brand?->id ?? $partner->id,
                 'brand'          => $name,
                 'logo'           => $partner->logo,
                 'products_count' => $productsCount,
